@@ -1,84 +1,55 @@
 'use strict';
 
-var app = angular.module('DGRL', []);
+var app = angular.module('DGRL', ['ui.grid', 'ui.grid.grouping', 'ngForce'])
+.directive('grid', function(){
+    return {
+        restrict: 'E',
+        transclude: false,
+        scope: {},
+        controller: 'listController',
+        template: '<div ui-grid="gridOptions" class="myGrid" ui-grid-grouping></div>'
+    }
+})
 
-app.controller('listController', function(){
-    var pageSizes, currentPageSize;
 
-    $scope.gridOptions.data = simplifiedServices;
+.controller('listController', function($scope, vfr){
+    vfr.query('SELECT Id FROM Relationship_Group__c').then(function(result){console.log(result)});
 
-    // Options that set which features are enabled / disabled on UI-Grid
-    $scope.gridOptions = {
+    $scope.gridOptions = { 
         enableSorting: true,
-        enableFiltering: true,
         enableGridMenu: false,
-        groupUseEntireRow: true,
         treeRowHeaderAlwaysVisible: false,
-        groupingNullLabel: 'Null', 
-        paginationPageSizes: pageSizes, 
-        paginationPageSize: currentPageSize,
-        enableColumnMenus: false,
-        columnDefs: [ 
-            { name: 'field1', displayName: 'Investor Account', 
-              grouping: {groupPriority: 0},
-              sort: { priority: 0, direction: 'desc' },
-              headerCellTemplate:'views/templateHeaderCell.html',
-              //cellTemplate:'<div ng-if="row.groupHeader">{{row.entity[col.field]}}</div>',
-              filter: {placeholder:"filter..."},
-              filterHeaderTemplate: 'views/column-filter.html',
-              enableHiding: false,
-              cellTooltip: false, 
-              headerToolTip: false 
-            },  
-            { name: 'field2', displayName: 'Fund', 
-              enableHiding: false, 
-              headerCellTemplate:'views/templateHeaderCell.html',
-              filter: {placeholder:"filter..."},
-              filterHeaderTemplate: 'views/column-filter.html',
-              cellTooltip: false,
-              headerToolTip: false
-            },
-            { name: 'field3', displayName: 'Service Type', 
-              headerCellTemplate:'views/templateHeaderCell.html',
-              filter: {term: '*', type: uiGridConstants.filter.SELECT, selectOptions: serviceTypes},
-              filterHeaderTemplate: 'views/column-filter.html',
-              enableHiding: false,
-              cellTooltip: false,
-              headerToolTip: false
-            },
-            { name: 'field4', displayName: 'Frequency', 
-              headerCellTemplate:'views/templateHeaderCell.html',
-              filter: {term: '*', type: uiGridConstants.filter.SELECT, selectOptions: frequencyTypes},
-              filterHeaderTemplate: 'views/column-filter.html',
-              enableHiding: false,
-              cellTooltip: false,
-              headerToolTip: false
-            },
-            { name: 'field5', displayName: 'Method', 
-              headerCellTemplate:'views/templateHeaderCell.html',
-              filter: {term: '*', type: uiGridConstants.filter.SELECT, selectOptions: methodTypes},
-              filterHeaderTemplate: 'views/column-filter.html',
-              enableHiding: false,
-              cellTooltip: false,
-              headerToolTip: false
-            },
-            { name: 'field6', displayName: 'Start Date', 
-              enableFiltering: false, 
-              enableHiding: false,
-              cellTooltip: false,
-              headerToolTip: false
-            },
-            { name: 'field7', displayName: 'Remove',
-              cellTemplate: 'views/removeCellTemplate.html',
-              enableFiltering: false, 
-              enableHiding: false,
-              cellTooltip: false,
-              headerToolTip: false,
-              enableSorting:false
-            }
-        ],
-        onRegisterApi: function(gridApi) {
-            $scope.gridApi = gridApi;
-        }
+        groupingNullLabel: ' ',
+        columnDefs: 
+        [ {field: 'totalAUM'},
+           {field: 'futureEventDate'},
+           {field: 'comments'},
+           {field: 'membersInRelationshipGroup', type: 'number'} ]
     };
-}]);
+    var data = [{'totalAUM':'1800000',
+                'futureEventDate': '10/20/2016',
+                'comments': 'This is a relationship group',
+                'membersInRelationshipGroup': 8},
+                {'totalAUM':'300210',
+                'futureEventDate': '7/31/2016',
+                'comments': 'Relationship group 2',
+                'membersInRelationshipGroup': 5},
+                {'totalAUM':'19200',
+                'futureEventDate': '7/31/2016',
+                'comments': 'Relationship group 3',
+                'membersInRelationshipGroup': 20},
+                {'totalAUM':'8000',
+                'futureEventDate': '7/12/2016',
+                'comments': 'Relationship group 4',
+                'membersInRelationshipGroup': 1},
+                {'totalAUM':'62050',
+                'futureEventDate': '12/31/2016',
+                'comments': 'Relationship group 5',
+                'membersInRelationshipGroup': 16},
+                {'totalAUM':'20',
+                'futureEventDate': '10/20/2016',
+                'comments': 'Relationship group 6',
+                'membersInRelationshipGroup': 9}];
+
+    $scope.gridOptions.data = data;
+});
