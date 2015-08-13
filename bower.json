@@ -17,10 +17,9 @@
   ],
   "dependencies": {
     "angular": "~1.4.3",
-    "angular-bootstrap": "~0.13.0",
     "angular-animate": "~1.4.3",
     "lodash": "~3.10.0",
-    "angular-ui-grid": "^3.0.1",
+    "angular-ui-grid": "^3.0.3",
     "angular-force": "git://github.com/dnakov/angular-force"
   }
 }

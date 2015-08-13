@@ -87,7 +87,6 @@ gulp.task('vendorJS', function(){
       '**/lo-dash.js',
       '**/restangular.js',
       '**/ngForce.js',
-      '**/ngForce-*.js',
       '**/ui-grid.js'
     ]))
 
@@ -96,30 +95,35 @@ gulp.task('vendorJS', function(){
 });
 
 gulp.task('vendorJSMinified', function(){
-    var vendorBowerFiles = mainBowerFiles();
+    // For some reason the angular minified file isn't working
+    var vendorBowerFiles = ['angular-ui-grid/ui-grid.min.js', 
+                            'angular/angular.js', 
+                            'angular-animate/angular-animate.min.js', 
+                            'angular-force/ngForce.js', 
+                            'lodash/lodash.min.js', 
+                            'restangular/dist/restangular.min.js'];
     // vendorBowerFiles.push('moment/min/moment-with-locales.min.js');
     //concatenate vendor JS files
     return gulp.src(vendorBowerFiles, { base: './bower_components'})
-    .pipe(filter('**/*.js'))
+    // .pipe(filter(['**/*.js']))
       /*
        * If you need the scripts to be loaded in a different order,
        * edit the array below
        */    
     .pipe(order([
       "**/angular.js",
-      "**/angular-*.js",
-      '**/lo-dash.js',
-      '**/restangular.js',
+      "**/angular-*.min.js",
+      '**/lo-dash.min.js',
+      '**/restangular.min.js',
       '**/ngForce.js',
-      '**/ngForce-*.js',
-      '**/ui-grid.js'
+      '**/ui-grid.min.js'
     ]))
 
-    .pipe(ngAnnotate())
-    .pipe(sourcemaps.init())
-    .pipe(uglifyJS())
-    .pipe(concat('lib.js'))
-    .pipe(sourcemaps.write('../maps/'))
+    // .pipe(ngAnnotate())
+    // .pipe(sourcemaps.init())
+    // .pipe(uglifyJS())
+    // .pipe(concat('lib.js'))
+    // .pipe(sourcemaps.write('../maps/'))
     .pipe(gulp.dest('./build/scripts'));
 });
 
