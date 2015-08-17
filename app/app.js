@@ -183,10 +183,8 @@ var app = angular.module('DGRL', ['ui.grid', 'ui.grid.grouping', 'ngForce'])
             sort: {priority: fieldPriority, direction: 'asc'},
             cellTemplate: '<div ng-if="!col.grouping || col.grouping.groupPriority === undefined || col.grouping.groupPriority === null || '
                         + '( row.groupHeader && col.grouping.groupPriority === row.treeLevel )" '
-                        + 'class="ui-grid-cell-contents" title="TOOLTIP"><a ng-if="'
-                        + groupFieldType+'===REFERENCE" href=/{{'+
-                        + getFieldToDisplay(groupFieldType, groupField, isPrimary).replace('.Name', '.Id')
-                        + '}} target="_parent">{{'
+                        + 'class="ui-grid-cell-contents" title="TOOLTIP"><a href="/{{COL_FIELD.substring(0,18)}}" ng-if="'
+                        + groupFieldType+'===REFERENCE" target="_parent">{{'
                         + getFieldToDisplay(groupFieldType, groupField, isPrimary)
                         + ' CUSTOM_FILTERS}}</a><span ng-if="'+groupFieldType+'!==REFERENCE">{{'
                         + getFieldToDisplay(groupFieldType, groupField, isPrimary)
@@ -207,7 +205,7 @@ var app = angular.module('DGRL', ['ui.grid', 'ui.grid.grouping', 'ngForce'])
         } else {
             rowString = 'COL_FIELD';
         }
-        
+        console.log('rowString: ' + rowString);
         return rowString;
     }
 
