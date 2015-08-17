@@ -124,6 +124,7 @@ var app = angular.module('DGRL', ['ui.grid', 'ui.grid.grouping', 'ngForce'])
         enableGridMenu: false,
         treeRowHeaderAlwaysVisible: false,
         groupingNullLabel: ' ',
+        rowHeight: 23,
         columnDefs: columns,
         onRegisterApi: function(gridApi){
             $scope.gridApi = gridApi;
@@ -152,7 +153,8 @@ var app = angular.module('DGRL', ['ui.grid', 'ui.grid.grouping', 'ngForce'])
                         hasGroupField2Name = true;
                     }else {
                         columns.push(
-                            {   name: result[i].label, 
+                            {
+                                name: result[i].label, 
                                 field: result[i].fieldPath
                             }
                         );
