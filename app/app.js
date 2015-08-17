@@ -30,20 +30,38 @@ var app = angular.module('DGRL', ['ui.grid', 'ui.grid.grouping', 'ngForce'])
     var columns = [];
     $scope.data = [];
 
-    var primaryPromise = getFieldsAndColumns(primaryRelated, primaryRelated.replace('__c', '_DGRL'), 
-                                                primaryFields, columns, primaryGroupField, secondaryGroupField);
+    if(primaryRelated){
+        var primaryRelatedFieldSet = primaryRelated;
 
-    var secondaryPromise = getFieldsAndColumns(secondaryRelated, secondaryRelated.replace('__c', '_DGRL'), 
-                                                secondaryFields, columns, primaryGroupField, secondaryGroupField);
+        if(primaryRelated.indexOf('__c') !== -1){
+            primaryRelatedFieldSet = primaryRelated.replace('__c', '_DGRL');
+        } else {
+            primaryRelatedFieldSet = primaryRelated + '_DGRL';
+        }
+        var primaryPromise = getFieldsAndColumns(primaryRelated, primaryRelatedFieldSet, primaryFields, 
+                                                  columns, primaryGroupField, secondaryGroupField);
+    }
+
+    if(secondaryRelated){
+        var secondaryRelatedFieldSet = secondaryRelated;
+
+        if(secondaryRelated.indexOf('__c') !== -1){
+            secondaryRelatedFieldSet = secondaryRelated.replace('__c', '_DGRL');
+        } else {
+            secondaryRelatedFieldSet = secondaryRelated + '_DGRL';
+        }
+        var secondaryPromise = getFieldsAndColumns(secondaryRelated, secondaryRelatedFieldSet, secondaryFields, 
+                                                    columns, primaryGroupField, secondaryGroupField);
+    }
 
     $q.all([primaryPromise, secondaryPromise]).then(
         function(){
-            // console.log('primary fields: ' + primaryFields);
-            // console.log('secondary fields: ' + secondaryFields);
-            // console.log('column defs:', columns);
+            console.log('primary fields: ' + primaryFields);
+            console.log('secondary fields: ' + secondaryFields);
+            console.log('column defs:', columns);
 
             var query = buildQuery(primaryRelated, primaryFields, primaryRelatedField, sf.Id);
-            // console.log('query1: ' + query);
+            console.log('query1: ' + query);
 
             var primaryObjs = [];
 
@@ -53,40 +71,50 @@ var app = angular.module('DGRL', ['ui.grid', 'ui.grid.grouping', 'ngForce'])
                 var ids = '';
 
                 for(var j = 0; j < len; j++){
-                    if(primaryObjs[result.records[j][primaryGroupField]] === undefined){
-                        primaryObjs[result.records[j][primaryGroupField]] = [];
-                    }
+                    if(primaryGroupField){
+                        if(primaryObjs[result.records[j][primaryGroupField]] === undefined){
+                            primaryObjs[result.records[j][primaryGroupField]] = [];
+                        }
 
-                    primaryObjs[result.records[j][primaryGroupField]].push(result.records[j]);
-                    
-                    ids += '\''+result.records[j][primaryGroupField]+'\'';
-                    if(j < len-1){
-                        ids += ',';
+                        primaryObjs[result.records[j][primaryGroupField]].push(result.records[j]);
+                        
+                        ids += '\''+result.records[j][primaryGroupField]+'\'';
+                        if(j < len-1){
+                            ids += ',';
+                        }
+                    }
+                    if(!secondaryRelated){
+                        $scope.data.push(result.records[j]);
                     }
                 }
 
-                var query2 = buildQuery(secondaryRelated, secondaryFields, secondaryRelatedField, ids);
-                // console.log('query2: ' + query2);
+                if(secondaryRelated){
+                    var query2 = buildQuery(secondaryRelated, secondaryFields, secondaryRelatedField, ids);
+                    console.log('query2: ' + query2);
+                    return vfr.query(query2);
+                } else {
 
-                return vfr.query(query2);
-
+                    return $q.when('no second query');
+                }
             }).then(function(result){
+                if(result !== 'no second query'){
+                    var length = result.records.length;
+                    for(var h = 0; h < length; h++){
 
-                var length = result.records.length;
-                for(var h = 0; h < length; h++){
+                        var rowsToMerge = primaryObjs[result.records[h][secondaryRelatedField]];
+                        var toMergeLength = rowsToMerge.length;
 
-                    var rowsToMerge = primaryObjs[result.records[h][secondaryRelatedField]];
-                    var toMergeLength = rowsToMerge.length;
-
-                    for(var k = 0; k < toMergeLength; k++){
-                        var mergedRow = angular.merge({}, result.records[h], rowsToMerge[k]);
-                        $scope.data.push(mergedRow);
+                        for(var k = 0; k < toMergeLength; k++){
+                            var mergedRow = angular.merge({}, result.records[h], rowsToMerge[k]);
+                            $scope.data.push(mergedRow);
+                        }
                     }
                 }
 
+                // This command only works after grid data has been populated
                 $timeout($scope.gridApi.treeBase.expandAllRows);
 
-                // console.log('data: ', $scope.data);
+                console.log('data: ', $scope.data);
             }).catch(function(error){console.error(error)});
         }
     );
@@ -106,17 +134,17 @@ var app = angular.module('DGRL', ['ui.grid', 'ui.grid.grouping', 'ngForce'])
 
     function getFieldsAndColumns(objType, fieldSetName, fieldArray, columns, groupField1, groupField2){
         var hasGroupField1Name = false, hasGroupField2Name = false;
-        var groupField1Name = groupField1.replace('__c', '__r') + '.Name';
-        var groupField2Name = groupField2.replace('__c', '__r') + '.Name';
+        var groupField1Name = groupField1.replace('__c', '__r')+'.Name';
+        var groupField2Name = groupField2.replace('__c', '__r')+'.Name';
 
         return vfr.describeFieldSet(objType, fieldSetName).then(
             function(result){
                 for(var i = 0; i < result.length; i++){
                     fieldArray.push(result[i].fieldPath);
 
-                    if(result[i].fieldPath === groupField1){
+                    if(groupField1 !== '' && result[i].fieldPath === groupField1){
                         columns.push( buildColumn(result[i], groupField1, primaryGroupFieldType, 0, true) );
-                    } else if(result[i].fieldPath === groupField2){
+                    } else if(groupField2 !== '' && result[i].fieldPath === groupField2){
                         columns.push( buildColumn(result[i], groupField2, secondaryGroupFieldType, 1, false) );
                     } else if(result[i].fieldPath === groupField1Name){
                         hasGroupField1Name = true;
@@ -133,11 +161,11 @@ var app = angular.module('DGRL', ['ui.grid', 'ui.grid.grouping', 'ngForce'])
 
                 // We want to display names instead of Ids for reference fields
                 if(!hasGroupField1Name && primaryGroupFieldType === 'REFERENCE' && primaryGroupObj === objType){
-                    fieldArray.push(groupField1.replace('__c', '__r') + '.Name');
+                    fieldArray.push(groupField1Name);
                 }
 
                 if(!hasGroupField2Name && secondaryGroupFieldType === 'REFERENCE' && secondaryGroupObj === objType){
-                    fieldArray.push(groupField2.replace('__c', '__r') + '.Name');
+                    fieldArray.push(groupField2Name);
                 }
             }
         ).catch(
@@ -154,29 +182,32 @@ var app = angular.module('DGRL', ['ui.grid', 'ui.grid.grouping', 'ngForce'])
             grouping: {groupPriority: fieldPriority},
             sort: {priority: fieldPriority, direction: 'asc'},
             cellTemplate: '<div ng-if="!col.grouping || col.grouping.groupPriority === undefined || col.grouping.groupPriority === null || '
-                        +'( row.groupHeader && col.grouping.groupPriority === row.treeLevel )" '
-                        +'class="ui-grid-cell-contents" title="TOOLTIP">{{'
+                        + '( row.groupHeader && col.grouping.groupPriority === row.treeLevel )" '
+                        + 'class="ui-grid-cell-contents" title="TOOLTIP"><a ng-if="'
+                        + groupFieldType+'===REFERENCE" href=/{{'+
+                        + getFieldToDisplay(groupFieldType, groupField, isPrimary).replace('.Name', '.Id')
+                        + '}} target="_parent">{{'
                         + getFieldToDisplay(groupFieldType, groupField, isPrimary)
-                        +' CUSTOM_FILTERS}}</div>'
+                        + ' CUSTOM_FILTERS}}</a><span ng-if="'+groupFieldType+'!==REFERENCE">{{'
+                        + getFieldToDisplay(groupFieldType, groupField, isPrimary)
+                        + '}}</span></div>'
         }
     }
 
     // If the grouping field is a reference, we want to show a name instead of 
     // a Salesforce ID in the grid
     function getFieldToDisplay(fieldType, groupField, isPrimary){
-        var rowString = 'row.treeNode.children[0]'
+        var rowString = 'row.treeNode.children[0]';
         if(fieldType === 'REFERENCE'){
             if(isPrimary){
-                rowString += '.children[0].row.entity.'
-                                + groupField.replace('__c','__r')+'.Name';
+                rowString += '.children[0].row.entity.'+groupField.replace('__c', '__r')+'.Name';
             } else {
-                rowString += '.row.entity.'
-                                + groupField.replace('__c','__r')+'.Name';
+                rowString += '.row.entity.'+groupField.replace('__c', '__r')+'.Name';
             }
         } else {
-            rowString = 'COL_FIELD'
+            rowString = 'COL_FIELD';
         }
-
+        
         return rowString;
     }
 
@@ -192,4 +223,5 @@ var app = angular.module('DGRL', ['ui.grid', 'ui.grid.grouping', 'ngForce'])
 
         return query + ' FROM ' + objType + ' WHERE ' + relatedObjField + ' IN (' + relatedIds + ')';
     }
+
 });
