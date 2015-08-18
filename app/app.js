@@ -1,13 +1,13 @@
 'use strict';
 
-var app = angular.module('DGRL', ['ui.grid', 'ui.grid.grouping', 'ngForce'])
+var app = angular.module('DGRL', ['ui.grid', 'ui.grid.grouping', 'ui.grid.pagination', 'ngForce'])
 .directive('grid', function(){
     return {
         restrict: 'E',
         transclude: false,
         scope: {},
         controller: 'listController',
-        template: '<div ui-grid="gridOptions" class="myGrid" ui-grid-grouping></div>'
+        template: '<div ui-grid="gridOptions" class="myGrid" ui-grid-grouping ui-grid-pagination></div>'
     }
 })
 
@@ -123,6 +123,8 @@ var app = angular.module('DGRL', ['ui.grid', 'ui.grid.grouping', 'ngForce'])
         enableSorting: true,
         enableGridMenu: false,
         treeRowHeaderAlwaysVisible: false,
+        paginationPageSizes: [25, 50, 75],
+        paginationPageSize: 25,
         groupingNullLabel: ' ',
         rowHeight: 23,
         columnDefs: columns,
@@ -154,6 +156,7 @@ var app = angular.module('DGRL', ['ui.grid', 'ui.grid.grouping', 'ngForce'])
                     }else {
                         columns.push(
                             {
+                                enableHiding: false,
                                 name: result[i].label, 
                                 field: result[i].fieldPath
                             }
@@ -181,6 +184,7 @@ var app = angular.module('DGRL', ['ui.grid', 'ui.grid.grouping', 'ngForce'])
         return {
             name: field.label,
             field: field.fieldPath,
+            enableHiding: false,
             grouping: {groupPriority: fieldPriority},
             sort: {priority: fieldPriority, direction: 'asc'},
             cellTemplate: '<div ng-if="!col.grouping || col.grouping.groupPriority === undefined || col.grouping.groupPriority === null || '
