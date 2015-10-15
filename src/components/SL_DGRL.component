@@ -1,0 +1,31 @@
+<apex:component controller="ngForceController" extensions="SL_DGRL_Extension">
+    <apex:stylesheet value="{!URLFOR($Resource.SL_DGRL, 'styles/lib.css')}"></apex:stylesheet>
+    <apex:stylesheet value="{!URLFOR($Resource.SL_DGRL, 'styles/main.css')}"></apex:stylesheet>
+
+    <div class="prefix-bootstrap" ng-app="DGRL">
+        <grid></grid>
+    </div>
+
+    <apex:includescript value="{!URLFOR($Resource.SL_DGRL, 'scripts/lib.js')}"></apex:includescript>
+    <apex:includescript value="{!URLFOR($Resource.SL_DGRL, 'scripts/templates.js')}"></apex:includescript>
+    <apex:includescript value="{!URLFOR($Resource.SL_DGRL, 'scripts/main.js')}"></apex:includescript>
+
+    <script type="text/javascript">
+        var module = angular.module('DGRL');
+        module.factory('sf', function(){
+            return {
+                Id : "{!objectId}",
+                PrimaryRelated: "{!primaryRelated}",
+                PrimaryRelatedField: "{!primaryRelatedField}",
+                SecondaryRelated: "{!secondaryRelated}",
+                SecondaryRelatedField: "{!secondaryRelatedField}",
+                PrimaryGroupField: "{!primaryGroupField}",
+                PrimaryGroupFieldType: "{!primaryGroupFieldType}",
+                PrimaryGroupObj: "{!primaryGroupObj}",
+                SecondaryGroupField: "{!secondaryGroupField}",
+                SecondaryGroupFieldType: "{!secondaryGroupFieldType}",
+                SecondaryGroupObj: "{!secondaryGroupObj}"
+            };
+        });
+    </script>
+</apex:component>

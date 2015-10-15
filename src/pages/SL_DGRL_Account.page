@@ -1,0 +1,4 @@
+<apex:page standardController="Account" tabStyle="Account">
+    <apex:pageMessages />
+    <c:SL_DGRL ></c:SL_DGRL>
+</apex:page>
