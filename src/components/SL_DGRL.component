@@ -9,9 +9,8 @@
     <apex:includescript value="{!URLFOR($Resource.SL_DGRL, 'scripts/lib.js')}"></apex:includescript>
     <apex:includescript value="{!URLFOR($Resource.SL_DGRL, 'scripts/templates.js')}"></apex:includescript>
     <apex:includescript value="{!URLFOR($Resource.SL_DGRL, 'scripts/main.js')}"></apex:includescript>
-
     <script type="text/javascript">
-        var module = angular.module('DGRL');
+        var module = angular.module('DGRL'); 
         module.factory('sf', function(){
             return {
                 Id : "{!objectId}",

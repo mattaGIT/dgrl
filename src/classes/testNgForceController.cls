@@ -12,7 +12,6 @@ public class testNgForceController{
         'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'+
         'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'+
         'XXXXXXXXXXXXXXXX'; 
-     
     static private void assertError(String jsonResult, String expectedError, String method) {
 
         system.debug('$$$$$$$$$$$$$$$$$$$$\n\n' + jsonResult);
@@ -31,7 +30,7 @@ public class testNgForceController{
         System.assertEquals(expectedError, errorCode, 
                                'errorCode should be '+expectedError+' in '+method+' result');
     }
-    
+
     static testMethod void testDescribe() {
         // Assume we have accounts
         String jsonResult = ngForceController.describe('Account');
@@ -276,96 +275,5 @@ public class testNgForceController{
         assertError(jsonResult, 'STRING_TOO_LONG', 'ngForceController.create');
 
         return id;
-    }
-
-    static testMethod void testCRUD() {
-        String accName = 'Test1';
-        String accNumber = '1234';
-        
-        // String field values
-        Id id = testCreate(accName, accNumber, '"AnnualRevenue" : "1000000",'+
-             '"NumberOfEmployees" : "1000",'+
-             '"Phone" : "(111) 222-3333"');
-
-        testDelete(id);
-        
-        // Integer field values
-        id = testCreate(accName, accNumber, '"AnnualRevenue" : 1000000,'+
-             '"NumberOfEmployees" : 1000,'+
-             '"Phone" : "(111) 222-3333"');
-        testRetrieve(accName, accNumber, id);
-        testQuery(accName, accNumber);
-        testSearch(accName, accNumber, id);
-        testUpdate(accName+'1', accNumber+'1', id, '"AnnualRevenue" : "1100000",'+
-             '"NumberOfEmployees" : "1100",'+
-             '"Phone" : "(112) 222-3333"');
-        testUpdate(accName+'2', accNumber+'2', id, '"AnnualRevenue" : "2000000",'+
-             '"NumberOfEmployees" : "2000",'+
-             '"Phone" : "(222) 222-3333"');
-        testUpsert(accName+'3', accNumber+'3', id, '"AnnualRevenue" : 3000000,'+
-             '"NumberOfEmployees" : 3000,'+
-             '"Phone" : "(333) 222-3333"');
-        testUpsert(accName+'4', accNumber+'4', id, '"AnnualRevenue" : 4000000,'+
-             '"NumberOfEmployees" : 4000,'+
-             '"Phone" : "(444) 222-3333"');
-
-        String jsonResult = ngForceController.describeFieldSet('Task', 'SL_TaskDescription');
-        System.assertNotEquals(null, jsonResult, 'ngForceController.describeFieldSet returned null');
-
-        jsonResult = ngForceController.soqlFromFieldSet('Task', 'SL_TaskDescription');
-        System.assertNotEquals(null, jsonResult, 'ngForceController.soqlFromFieldSet returned null');
-        
-        jsonResult = ngForceController.getPicklistValues('Task', 'Type');
-        System.assertNotEquals(null, jsonResult, 'ngForceController.getPicklistValues returned null');
-
-        jsonResult = ngForceController.getObjType(id);
-        System.assertNotEquals(null, jsonResult, 'ngForceController.getObjType returned null');
-
-        jsonResult = ngForceController.bulkCreate('Account', '"AnnualRevenue" : 1000000,'+'"NumberOfEmployees" : 1000,'+'"Phone" : "(111) 222-3333"');
-        System.assertNotEquals(null, jsonResult, 'ngForceController.bulkCreate returned null');
-
-        jsonResult = ngForceController.bulkCreate('YYYY', '"AnnualRevenue" : 1000000,'+'"NumberOfEmployees" : 1000,'+'"Phone" : "(111) 222-3333"');
-        System.assertNotEquals(null, jsonResult, 'ngForceController.bulkCreate returned null');
-
-        Contact objContact = new Contact(FirstName='Test', LastName='Contact');
-
-        Task objTask = new Task(isParent__c=true);
-        insert objTask;
-        
-        Task objTask2 = new Task(ParentId__c=objTask.Id, OwnerId=UserInfo.getUserId());
-        insert objTask2;
-
-        Task objTask3 = new Task(isParent__c=true);
-        insert objTask3;
-
-        Task objTask4 = new Task(isParent__c=true);
-        insert objTask4;
-
-        Account objAccount = new Account(Name='Test');
-        insert objAccount;
-
-        Attachment objAttachment = new Attachment(Name='Test Attachment', Body=Blob.valueOf('Test Data'), ParentId=objTask2.Id);
-        insert objAttachment;
-        
-        jsonResult = ngForceController.bulkCreate('TaskRelation', '[{"RelationId":\"'+ objContact.Id +'\","TaskId":\"'+ objTask.Id +'\"}]');
-        System.assertNotEquals(null, jsonResult, 'ngForceController.bulkCreate returned null');
-        
-        jsonResult = ngForceController.bulkDelete('Account', '"AnnualRevenue" : 1000000,'+'"NumberOfEmployees" : 1000,'+'"Phone" : "(111) 222-3333"');
-        System.assertNotEquals(null, jsonResult, 'ngForceController.bulkDelete returned null');
-
-        jsonResult = ngForceController.bulkDelete('TTTT', '"AnnualRevenue" : 1000000,'+'"NumberOfEmployees" : 1000,'+'"Phone" : "(111) 222-3333"');
-        System.assertNotEquals(null, jsonResult, 'ngForceController.bulkDelete returned null');
-        
-        jsonResult = ngForceController.bulkDelete('Task', '[{"Id":\"'+ objTask3.Id +'\"},{"Id":\"'+ objTask4.Id +'\"}]');
-        System.assertNotEquals(null, jsonResult, 'ngForceController.bulkDelete returned null');
-    
-        jsonResult = ngForceController.query('SELECT Subject FROM Event WHERE WhatId = \''+objAccount.Id+'\' AND isDeleted = false PLACEHOLDER-OPENACTIVITY');
-
-        jsonResult = ngForceController.query('SELECT Subject FROM Event WHERE WhatId = \''+objAccount.Id+'\' AND isDeleted = false PLACEHOLDER-CLOSEDACTIVITY');
-
-        //jsonResult = ngForceController.queryFromFieldSet(objTask.Id, 'SL_TaskDescription');
-        //System.assertNotEquals(null, jsonResult, 'ngForceController.queryFromFieldSet returned null');       
-        
-        testDelete(id);       
     }
 }
