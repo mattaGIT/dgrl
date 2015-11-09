@@ -10,7 +10,7 @@ public with sharing class SL_DGRL_Extension {
 
     public transient String primaryGroupField        {get;set;}
     public transient String primaryGroupFieldType    {get;set;}
-    public transient String primaryGroupObj          {get;set;} 
+    public transient String primaryGroupObj          {get;set;}
 
     public transient String secondaryGroupField      {get;set;}
     public transient String secondaryGroupFieldType  {get;set;}
