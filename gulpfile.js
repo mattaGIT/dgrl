@@ -72,10 +72,9 @@ gulp.task('customCSSMinified', function(){
 });
 
 gulp.task('vendorJS', function(){
-    var vendorBowerFiles = mainBowerFiles();
     // vendorBowerFiles.push('moment/min/moment-with-locales.min.js');
     //concatenate vendor JS files
-    return gulp.src(vendorBowerFiles, { base: './bower_components'})
+    return gulp.src(mainBowerFiles())
     .pipe(filter('**/*.js'))
       /*
        * If you need the scripts to be loaded in a different order,
