@@ -1,6 +1,6 @@
 <apex:component controller="SL_DGRL_Extension">
-    <apex:stylesheet value="{!URLFOR($Resource.SL_DGRL, 'styles/lib.css')}"></apex:stylesheet>
-    <apex:stylesheet value="{!URLFOR($Resource.SL_DGRL, 'styles/main.css')}"></apex:stylesheet>
+    <apex:stylesheet value="{!URLFOR($Resource.SL_DGRL2, 'styles/lib.css')}"></apex:stylesheet>
+    <apex:stylesheet value="{!URLFOR($Resource.SL_DGRL2, 'styles/main.css')}"></apex:stylesheet>
 
     <div class="prefix-bootstrap" ng-app="DGRL">
         <dgrl></dgrl>
