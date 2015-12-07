@@ -1,3 +1,7 @@
+.isNumeric{
+    text-align: right;
+}
+
 /*Angular UI Grid Styling*/
 .myGrid {
     width: 100%;

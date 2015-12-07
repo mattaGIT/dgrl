@@ -31,6 +31,14 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
         });
         return columns;
     };
+    var customTreeAggregationFn = function(aggregation, fieldValue, value, row) {
+        // calculates the average of the squares of the values
+        if (typeof(aggregation.count) === 'undefined') {
+            aggregation.count = 0;
+        }
+        aggregation.count++;
+        aggregation.value = value;
+    }
 
 
     $scope.ids = [sf.Id];
@@ -43,6 +51,7 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
     $scope.object1.groupingField = sf.Grouping_1_Field;
     $scope.object1.groupingFieldSet = sf.Grouping_1_Field_Set;
     $scope.object1.groupingParentField = sf.Grouping_1_Parent_Field;
+    $scope.object1.whereCondition = 'Exclude_From_Rollup__c = false';
 
     $scope.object2 = {};
     $scope.object2.fields = [];
@@ -72,16 +81,27 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
             },
             sort: {
                 priority: 1,
-                direction: 'desc'
+                direction: 'asc'
             },
             cellTemplate: '<div><div ng-if="!col.grouping || col.grouping.groupPriority === undefined || col.grouping.groupPriority === null || ( row.groupHeader && col.grouping.groupPriority === row.treeLevel )" class="ui-grid-cell-contents" title="TOOLTIP">{{COL_FIELD CUSTOM_FILTERS}}</div></div>'
+        }, {
+            name: 'EDM Id',
+            displayName: 'EDM Id',
+            field: 'Entity__r.EDM_ID__c',
+            enableColumnMenu: false,
+            customTreeAggregationFinalizerFn: function(aggregation) {
+                aggregation.rendered = aggregation.value;
+            },
+            cellTemplate: '<div><div class="ui-grid-cell-contents" ng-if="row.groupHeader" title="TOOLTIP">{{COL_FIELD CUSTOM_FILTERS}}</div></div>',
+            customTreeAggregationFn: customTreeAggregationFn
+
         }, {
             name: 'Account #',
             field: 'Financial_Account__r.Account_Number__c',
             enableColumnMenu: false,
             sort: {
                 priority: 2,
-                direction: 'desc'
+                direction: 'asc'
             },
         }, {
             name: 'Account Role',
@@ -91,6 +111,7 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
             field: 'Financial_Account__r.Total_Account_Value__c',
             name: 'Account Value',
             enableColumnMenu: false,
+            cellTemplate: '<div><div class="ui-grid-cell-contents isNumeric" title="TOOLTIP">{{COL_FIELD CUSTOM_FILTERS}}</div></div>',
             cellFilter: 'currency',
         }, {
             field: 'AccountValueOP',
@@ -102,7 +123,9 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
             customTreeAggregationFinalizerFn: function(aggregation) {
                 aggregation.rendered = aggregation.value;
             },
-            displayName: 'Account Value - OP'
+            displayName: 'Account Value - OP',
+            cellTemplate: '<div><div class="ui-grid-cell-contents isNumeric" title="TOOLTIP">{{COL_FIELD CUSTOM_FILTERS}}</div></div>',
+            footerCellTemplate: '<div><div class="ui-grid-cell-contents isNumeric">{{col.aggregationValue|currency}}</div></div>'
         }, {
             field: 'AccountValueIP',
             name: 'Account Value IP',
@@ -113,7 +136,9 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
             customTreeAggregationFinalizerFn: function(aggregation) {
                 aggregation.rendered = aggregation.value;
             },
-            displayName: 'Account Value - IP'
+            cellTemplate: '<div><div class="ui-grid-cell-contents isNumeric" title="TOOLTIP">{{COL_FIELD CUSTOM_FILTERS}}</div></div>',
+            displayName: 'Account Value - IP',
+            footerCellTemplate: '<div><div class="ui-grid-cell-contents isNumeric">{{col.aggregationValue|currency}}</div></div>'
         }],
 
         onRegisterApi: function(gridApi) {
@@ -179,7 +204,7 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
     function getFields(obj) {
         return vfr.describeFieldSet(obj.oName, obj.groupingFieldSet).then(function(results) {
             obj.shownFields = results;
-            makeQuery(obj, $scope.ids);
+            makeQuery(obj, obj.whereCondition);
 
             console.log(obj);
         }).then(function(results) {
@@ -191,7 +216,7 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
         })
     }
 
-    function makeQuery(obj) {
+    function makeQuery(obj, whereCondition) {
         obj.fields = obj.shownFields.slice();
         var otherFields = [{
             fieldPath: obj.groupingField
@@ -206,6 +231,9 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
         obj.query += _.pluck(obj.fields, 'fieldPath').join(', ');
         obj.query += ' FROM ' + obj.oName + ' WHERE ' + obj.groupingParentField + ' IN '
         obj.query += '(\'' + $scope.ids.join('\',\'') + '\')';
+        if (whereCondition) {
+            obj.query += ' AND ' + whereCondition;
+        }
     }
 
     function getRGs() {
