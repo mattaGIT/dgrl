@@ -46,7 +46,7 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf'])
                 enableColumnMenu:false,
                 sort: {
                     priority: 1,
-                    direction: 'desc'
+                    direction: 'asc'
                 },
 
             }, {
@@ -58,22 +58,27 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf'])
                 name: 'Account Value',
                 enableColumnMenu:false,
                 cellFilter: 'currency',
+                cellTemplate: '<div><div class="ui-grid-cell-contents isNumeric" title="TOOLTIP">{{COL_FIELD CUSTOM_FILTERS}}</div></div>'
             },
             {
                 field: 'AccountValueOP',
-                name: 'Account Value OP',
+                name: 'Account Value - OP',
                 enableColumnMenu:false,
                 cellFilter: 'currency',
                 footerCellFilter: 'currency',
-                aggregationType: uiGridConstants.aggregationTypes.sum, displayName: 'Total OP Value'
+                aggregationType: uiGridConstants.aggregationTypes.sum, displayName: 'Total OP Value',
+                cellTemplate: '<div><div class="ui-grid-cell-contents isNumeric" title="TOOLTIP">{{COL_FIELD CUSTOM_FILTERS}}</div></div>',
+                footerCellTemplate:'<div><div class="ui-grid-cell-contents isNumeric">{{col.aggregationValue|currency}}</div></div>'
             },
             {
                 field: 'AccountValueIP',
-                name: 'Account Value IP',
+                name: 'Account Value - IP',
                 enableColumnMenu:false,
                 cellFilter: 'currency',
                 footerCellFilter: 'currency',
-                aggregationType: uiGridConstants.aggregationTypes.sum, displayName: 'Total IP Value'
+                aggregationType: uiGridConstants.aggregationTypes.sum, displayName: 'Total IP Value',
+                cellTemplate: '<div><div class="ui-grid-cell-contents isNumeric" title="TOOLTIP">{{COL_FIELD CUSTOM_FILTERS}}</div></div>',
+                footerCellTemplate:'<div><div class="ui-grid-cell-contents isNumeric">{{col.aggregationValue|currency}}</div></div>'
             }],
             
             onRegisterApi: function(gridApi) {
@@ -99,7 +104,7 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf'])
                 }
                 else if(fa.type=='i'&&faType=='o')
                 {
-                    faMap=_.remove(faMap,faN);
+                    _.remove(faMap,{'faNum':faN});
                     faMap.push({'faNum':faN,'type':faType,'Id':fapId});
                 }
             }
