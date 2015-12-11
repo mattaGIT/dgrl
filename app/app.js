@@ -50,8 +50,8 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf'])
                 },
 
             }, {
-                name: 'Role',
-                field: 'Role__c',
+                name: 'Account Role',
+                field: 'Relationship_Role__c',
                 enableColumnMenu:false,
             }, {
                 field: 'Financial_Account__r.Total_Account_Value__c',
