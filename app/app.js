@@ -9,6 +9,8 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf'])
 
 .controller('MainCtrl', ['$scope', '$q', '$timeout', 'vfr', 'sf', '$interval', 'uiGridConstants', '$filter', function($scope, $q, $timeout, vfr, sf, $interval, uiGridConstants, $filter) {
 
+        $scope.baseURL= sf.baseURL;
+
         $scope.ids = [sf.Id];
 
         $scope.object1 = {};
@@ -40,20 +42,60 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf'])
             enableFiltering: false,
             enableSorting: true,
             groupingShowCounts:false,
-            columnDefs: [{
+            columnDefs: 
+
+            [{
+                name: 'Prism',
+                field: 'Prism__c',
+                enableColumnMenu:false,
+                width: '50',
+                cellTemplate:'<div><a target="_parent" href="{{grid.appScope.baseURL}}/{{row.entity.Prism__c}}" class="ui-grid-cell-contents"><img src=https://nbhnw--c.na12.content.force.com/servlet/servlet.ImageServer?id=015U0000002pUXW&oid=00DU0000000LyEC&lastMod=1417812317000> </a></div>'
+
+            },
+            {
                 name: 'Account #',
                 field: 'Financial_Account__r.Account_Number__c',
                 enableColumnMenu:false,
                 sort: {
                     priority: 1,
-                    direction: 'asc'
+                    direction: 'asc' 
                 },
+                cellTemplate:'<div><a target="_parent" href="{{grid.appScope.baseURL}}/{{row.entity.Financial_Account__c}}" class="ui-grid-cell-contents">{{COL_FIELD CUSTOM_FILTERS}}</a></div>'
 
-            }, {
-                name: 'Account Role',
+            },
+            {
+                name: 'Account Name',
+                field: 'Account_Name__c',
+                enableColumnMenu:false
+            }, 
+            {
+                name: 'Account Type',
+                field: 'Account_Type__c',
+                enableColumnMenu:false
+            }, 
+            {
+                name: 'Relationship / Role',
                 field: 'Relationship_Role__c',
+                enableColumnMenu:false
+            }, 
+
+            {
+                field: 'Account_Status__c',
+                name: 'Account Status',
+                enableColumnMenu:false
+            },
+            {
+                field: 'Financial_Account__r.Manager_Sales_Code__c',
+                name: 'Sales / Manager Code',
                 enableColumnMenu:false,
-            }, {
+            },
+            {
+                name: 'Discretionary',
+                field: 'Discretionary__c',
+                enableColumnMenu:false,
+                width: '100'
+            }, 
+            {
                 field: 'Financial_Account__r.Total_Account_Value__c',
                 name: 'Account Value',
                 enableColumnMenu:false,
@@ -85,7 +127,10 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf'])
                 $scope.gridApi = gridApi;
             }
         };
-
+        var getId = function(lookupField, lookupValue, returnField)
+        {
+            return _.pluck()
+        }
         function applyRules(fas){
             var faN;
             var fapId;
