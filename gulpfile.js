@@ -81,11 +81,13 @@ gulp.task('vendorJS', function(){
        * edit the array below
        */    
     .pipe(order([
+      "**/jquery.js",
       "**/angular.js",
       "**/angular-*.js",
-      '**/lo-dash.js',
+      '**/lodash.js',
       '**/restangular.js',
-      '**/ngForce.js',
+      '**/Scope.safeApply.js',
+      '**/ngForce1.js',
       '**/ui-grid.js'
     ]))
 
