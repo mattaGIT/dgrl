@@ -1,11 +1,11 @@
 'use strict';
 
 var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.grid.grouping'])
-    .directive('dgrl', function() {
-        return {
-            template: '<div ng-controller="MainCtrl"> <p ng-show="lastChange"> <div id="grid1" ui-grid="gridOptions" ui-grid-grouping class="grid" style="width:100%;"></div></div>'
-        }
-    })
+.directive('dgrl', function() {
+    return {
+        template: '<div ng-controller="MainCtrl"> <p ng-show="lastChange"> <div id="grid1" ui-grid="gridOptions" ui-grid-grouping class="grid" style="width:100%;"></div></div>'
+    }
+})
 
 .controller('MainCtrl', ['$scope', '$q', '$timeout', 'vfr', 'sf', '$interval', 'uiGridConstants', 'uiGridGroupingConstants', '$filter', function($scope, $q, $timeout, vfr, sf, $interval, uiGridConstants, uiGridGroupingConstants, $filter) {
 
@@ -40,7 +40,16 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
         aggregation.value = value;
     }
 
+    var customTreeAggregationIdandName = function(aggregation, fieldValue, value, row) {
+        // calculates the average of the squares of the values
+        if (typeof(aggregation.count) === 'undefined') {
+            aggregation.count = 0;
+        }
+        aggregation.count++;
+        aggregation.value = row.Entity__c;
+    }
 
+    $scope.baseURL= sf.baseURL;
     $scope.ids = [sf.Id];
     $scope.object1 = {};
     $scope.object1.fields = [];
@@ -74,16 +83,21 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
         groupingShowCounts: false,
         columnDefs: [{
             name: 'Person / Entity',
+            displayName: 'Person / Entity',
             field: 'Entity__r.Name',
             enableColumnMenu: false,
             grouping: {
                 groupPriority: 1
             },
+            customTreeAggregationFinalizerFn: function(aggregation) {
+                aggregation.rendered = 1234;
+            },
             sort: {
                 priority: 1,
                 direction: 'asc'
             },
-            cellTemplate: '<div><div ng-if="!col.grouping || col.grouping.groupPriority === undefined || col.grouping.groupPriority === null || ( row.groupHeader && col.grouping.groupPriority === row.treeLevel )" class="ui-grid-cell-contents" title="TOOLTIP">{{COL_FIELD CUSTOM_FILTERS}}</div></div>'
+            cellClass:'grid-align',
+            cellTemplate: '<div class="ui-grid-cell-contents"><a ng-if="!col.grouping || col.grouping.groupPriority === undefined || col.grouping.groupPriority === null || ( row.groupHeader && col.grouping.groupPriority === row.treeLevel )" target="_parent" href="{{grid.appScope.baseURL}}/{{grid.appScope.getId(row)}}" >{{COL_FIELD}}</a></div>'
         }, {
             name: 'EDM Id',
             displayName: 'EDM Id',
@@ -96,50 +110,77 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
             customTreeAggregationFn: customTreeAggregationFn
 
         }, {
+            name: 'Prism',
+            field: 'Prism__c',
+            enableColumnMenu: false,
+            width: '50',
+            cellTemplate: '<div class="ui-grid-cell-contents"><a ng-if="!row.groupHeader" target="_parent" href="http://prism.nb.com/AcctSpecificReports/default.aspx?acctno={{row.entity.Financial_Account__r.Account_Number__c}}" ><img src=https://nbhnw--c.na12.content.force.com/servlet/servlet.ImageServer?id=015U0000002pUXW&oid=00DU0000000LyEC> </a></div>'
+
+        }, {
             name: 'Account #',
             field: 'Financial_Account__r.Account_Number__c',
             enableColumnMenu: false,
             sort: {
-                priority: 2,
+                priority: 1,
                 direction: 'asc'
             },
+            cellTemplate: '<div class="ui-grid-cell-contents"><a target="_parent" href="{{grid.appScope.baseURL}}/{{row.entity.Financial_Account__c}}" class="ui-grid-cell-contents">{{COL_FIELD CUSTOM_FILTERS}}</a></div>'
+
         }, {
-            name: 'Account Role',
-            field: 'Role__c',
+            name: 'Account Name',
+            field: 'Account_Name__c',
+            enableColumnMenu: false
+        }, {
+            name: 'Account Type',
+            field: 'Account_Type__c',
+            enableColumnMenu: false
+        }, {
+            name: 'Relationship / Role',
+            field: 'Relationship_Role__c',
+            enableColumnMenu: false
+        },
+
+        {
+            field: 'Account_Status__c',
+            name: 'Account Status',
+            enableColumnMenu: false
+        }, {
+            field: 'Financial_Account__r.Manager_Sales_Code__c',
+            name: 'Sales / Manager Code',
             enableColumnMenu: false,
+        }, {
+            name: 'Discretionary',
+            field: 'Discretionary__c',
+            enableColumnMenu: false,
+            width: '100'
         }, {
             field: 'Financial_Account__r.Total_Account_Value__c',
             name: 'Account Value',
             enableColumnMenu: false,
-            cellTemplate: '<div><div class="ui-grid-cell-contents isNumeric" title="TOOLTIP">{{COL_FIELD CUSTOM_FILTERS}}</div></div>',
             cellFilter: 'currency',
+            cellTemplate: '<div><div class="ui-grid-cell-contents isNumeric" title="TOOLTIP">{{COL_FIELD CUSTOM_FILTERS}}</div></div>'
         }, {
             field: 'AccountValueOP',
-            name: 'Account Value OP',
+            name: 'Account Value - OP',
             enableColumnMenu: false,
             cellFilter: 'currency',
             footerCellFilter: 'currency',
-            treeAggregationType: uiGridGroupingConstants.aggregation.SUM,
-            customTreeAggregationFinalizerFn: function(aggregation) {
-                aggregation.rendered = aggregation.value;
-            },
-            displayName: 'Account Value - OP',
+            aggregationType: uiGridConstants.aggregationTypes.sum,
+            displayName: 'Total OP Value',
             cellTemplate: '<div><div class="ui-grid-cell-contents isNumeric" title="TOOLTIP">{{COL_FIELD CUSTOM_FILTERS}}</div></div>',
             footerCellTemplate: '<div><div class="ui-grid-cell-contents isNumeric">{{col.aggregationValue|currency}}</div></div>'
         }, {
             field: 'AccountValueIP',
-            name: 'Account Value IP',
+            name: 'Account Value - IP',
             enableColumnMenu: false,
             cellFilter: 'currency',
             footerCellFilter: 'currency',
-            treeAggregationType: uiGridGroupingConstants.aggregation.SUM,
-            customTreeAggregationFinalizerFn: function(aggregation) {
-                aggregation.rendered = aggregation.value;
-            },
+            aggregationType: uiGridConstants.aggregationTypes.sum,
+            displayName: 'Total IP Value',
             cellTemplate: '<div><div class="ui-grid-cell-contents isNumeric" title="TOOLTIP">{{COL_FIELD CUSTOM_FILTERS}}</div></div>',
-            displayName: 'Account Value - IP',
             footerCellTemplate: '<div><div class="ui-grid-cell-contents isNumeric">{{col.aggregationValue|currency}}</div></div>'
-        }],
+        }
+        ],
 
         onRegisterApi: function(gridApi) {
             $scope.gridApi = gridApi;
@@ -200,6 +241,11 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
         }
         return fas;
     }
+    $scope.getId = function(row)
+    {
+        var theId = row.treeNode.children[0].row.entity.Entity__c;
+        return theId;
+    }
 
     function getFields(obj) {
         return vfr.describeFieldSet(obj.oName, obj.groupingFieldSet).then(function(results) {
@@ -237,12 +283,17 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
     }
 
     function getRGs() {
-        var rgQuery = 'SELECT Id, Name FROM Relationship_Group__c WHERE ';
-        rgQuery += 'Parent_Relationship_Group__c = ' + $scope.ids;
-        rgQuery += ' OR Id =' + $scope.ids;
+        var rgQuery = 'SELECT Id, Name FROM Relationship_Group__c WHERE Id IN ';
+        rgQuery += '(SELECT Child_Relationship_Group__c  FROM Relationship_Group_Association__c WHERE Parent_Relationship_Group__c= '  ;
+        rgQuery += '\''+$scope.ids +'\')';
 
         return vfr.query(rgQuery).then(function(results) {
-            $scope.ids = _.pluck(results.records, 'Id');
+            var newIds = _.pluck(results.records, 'Id');
+            $scope.ids.push(newIds);
+            $scope.ids = _.uniq($scope.ids);
+        },
+        function(results) {
+            console.log(results);
         });
     }
 
