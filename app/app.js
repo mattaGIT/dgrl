@@ -246,8 +246,14 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
     function getFields(obj) {
         return vfr.describeFieldSet(obj.oName, obj.groupingFieldSet).then(function(results) {
             obj.shownFields = results;
-            makeQuery(obj, obj.whereCondition);
-
+            if($scope.ids.length!=0)
+            {
+                makeQuery(obj, obj.whereCondition);
+            }
+            else
+            {
+                $q.resolve();
+            }
             console.log(obj);
         }).then(function(results) {
             return vfr.query(obj.query);
@@ -285,7 +291,7 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
 
         return vfr.query(rgQuery).then(function(results) {
             var newIds = _.pluck(results.records, 'Id');
-            $scope.ids.push(newIds);
+            $scope.ids =$scope.ids.concat(newIds);
             $scope.ids = _.uniq($scope.ids);
         },
         function(results) {
