@@ -34,7 +34,7 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf'])
         $scope.object2.groupingParentField = sf.Grouping_2_Parent_Field;
 
         $scope.faMap = [];
-
+ 
         $scope.gridOptions = {
             rowHeight: 23,
             showGridFooter: false,
@@ -49,7 +49,7 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf'])
                 field: 'Prism__c',
                 enableColumnMenu:false,
                 width: '50',
-                cellTemplate:'<div><a target="_parent" href="{{grid.appScope.baseURL}}/{{row.entity.Prism__c}}" class="ui-grid-cell-contents"><img src=https://nbhnw--c.na12.content.force.com/servlet/servlet.ImageServer?id=015U0000002pUXW&oid=00DU0000000LyEC&lastMod=1417812317000> </a></div>'
+                cellTemplate:'<div class="ui-grid-cell-contents"><a target="_parent" href="{{grid.appScope.baseURL}}/{{row.entity.Prism__c}}" class="ui-grid-cell-contents"><img src=https://nbhnw--c.na12.content.force.com/servlet/servlet.ImageServer?id=015U0000002pUXW&oid=00DU0000000LyEC&lastMod=1417812317000> </a></div>'
 
             },
             {
@@ -60,7 +60,7 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf'])
                     priority: 1,
                     direction: 'asc' 
                 },
-                cellTemplate:'<div><a target="_parent" href="{{grid.appScope.baseURL}}/{{row.entity.Financial_Account__c}}" class="ui-grid-cell-contents">{{COL_FIELD CUSTOM_FILTERS}}</a></div>'
+                cellTemplate:'<div class="ui-grid-cell-contents"><a target="_parent" href="{{grid.appScope.baseURL}}/{{row.entity.Financial_Account__c}}" >{{COL_FIELD CUSTOM_FILTERS}}</a></div>'
 
             },
             {
@@ -109,7 +109,7 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf'])
                 cellFilter: 'currency',
                 footerCellFilter: 'currency',
                 aggregationType: uiGridConstants.aggregationTypes.sum, displayName: 'Total OP Value',
-                cellTemplate: '<div><div class="ui-grid-cell-contents isNumeric" title="TOOLTIP">{{COL_FIELD CUSTOM_FILTERS}}</div></div>',
+                cellTemplate: '<div class="ui-grid-cell-contents"><div title="TOOLTIP">{{COL_FIELD CUSTOM_FILTERS}}</div></div>',
                 footerCellTemplate:'<div><div class="ui-grid-cell-contents isNumeric">{{col.aggregationValue|currency}}</div></div>'
             },
             {
@@ -207,7 +207,7 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf'])
             obj.query = 'SELECT ';
             obj.query += _.pluck(obj.fields, 'fieldPath').join(', ');
             obj.query += ' FROM ' + obj.oName + ' WHERE ' + obj.groupingParentField + ' IN '
-            obj.query += '(' + $scope.ids.join('","') + ')';
+            obj.query += '(\'' + $scope.ids.join('","') + '\')';
         }
 
         if ($scope.object1.oName) {
