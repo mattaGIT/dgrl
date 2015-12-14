@@ -40,14 +40,6 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
         aggregation.value = value;
     }
 
-    var customTreeAggregationIdandName = function(aggregation, fieldValue, value, row) {
-        // calculates the average of the squares of the values
-        if (typeof(aggregation.count) === 'undefined') {
-            aggregation.count = 0;
-        }
-        aggregation.count++;
-        aggregation.value = row.Entity__c;
-    }
 
     $scope.baseURL= sf.baseURL;
     $scope.ids = [sf.Id];
@@ -87,10 +79,7 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
             field: 'Entity__r.Name',
             enableColumnMenu: false,
             grouping: {
-                groupPriority: 1
-            },
-            customTreeAggregationFinalizerFn: function(aggregation) {
-                aggregation.rendered = 1234;
+                groupPriority: 0
             },
             sort: {
                 priority: 1,
@@ -121,7 +110,7 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
             field: 'Financial_Account__r.Account_Number__c',
             enableColumnMenu: false,
             sort: {
-                priority: 1,
+                priority: 2,
                 direction: 'asc'
             },
             cellTemplate: '<div class="ui-grid-cell-contents"><a target="_parent" href="{{grid.appScope.baseURL}}/{{row.entity.Financial_Account__c}}" class="ui-grid-cell-contents">{{COL_FIELD CUSTOM_FILTERS}}</a></div>'
@@ -163,9 +152,13 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
             field: 'AccountValueOP',
             name: 'Account Value - OP',
             enableColumnMenu: false,
+            displayName: 'Total OP Value',
+            customTreeAggregationFinalizerFn: function(aggregation) {
+                aggregation.rendered = aggregation.value;
+            },
             cellFilter: 'currency',
             footerCellFilter: 'currency',
-            aggregationType: uiGridConstants.aggregationTypes.sum,
+            treeAggregationType: uiGridGroupingConstants.aggregation.SUM,
             displayName: 'Total OP Value',
             cellTemplate: '<div><div class="ui-grid-cell-contents isNumeric" title="TOOLTIP">{{COL_FIELD CUSTOM_FILTERS}}</div></div>',
             footerCellTemplate: '<div><div class="ui-grid-cell-contents isNumeric">{{col.aggregationValue|currency}}</div></div>'
@@ -173,10 +166,13 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
             field: 'AccountValueIP',
             name: 'Account Value - IP',
             enableColumnMenu: false,
+            displayName: 'Total IP Value',
+            customTreeAggregationFinalizerFn: function(aggregation) {
+                aggregation.rendered = aggregation.value;
+            },
             cellFilter: 'currency',
             footerCellFilter: 'currency',
-            aggregationType: uiGridConstants.aggregationTypes.sum,
-            displayName: 'Total IP Value',
+            treeAggregationType: uiGridGroupingConstants.aggregation.SUM,
             cellTemplate: '<div><div class="ui-grid-cell-contents isNumeric" title="TOOLTIP">{{COL_FIELD CUSTOM_FILTERS}}</div></div>',
             footerCellTemplate: '<div><div class="ui-grid-cell-contents isNumeric">{{col.aggregationValue|currency}}</div></div>'
         }
