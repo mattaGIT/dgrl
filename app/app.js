@@ -77,8 +77,10 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
                 name: 'Person / Entity',
                 displayName: 'Person / Entity',
                 field: 'Entity__r.Name',
-                width:'15%',
+                width: '15%',
                 enableColumnMenu: false,
+                cellTooltip: true,
+                headerTooltip:true,
                 grouping: {
                     groupPriority: 0
                 },
@@ -100,6 +102,8 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
                 name: 'Account #',
                 field: 'Financial_Account__r.Account_Number__c',
                 enableColumnMenu: false,
+                cellTooltip: true,
+                headerTooltip:true,
                 sort: {
                     priority: 2,
                     direction: 'asc'
@@ -109,31 +113,44 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
             }, {
                 name: 'Account Name',
                 field: 'Account_Name__c',
-                width:'15%',
-                enableColumnMenu: false
+                width: '15%',
+                enableColumnMenu: false,
+                cellTooltip: true,
+                headerTooltip:true
             }, {
                 name: 'Relationship / Role',
                 field: 'Relationship_Role__c',
-                width:'15%',
-                enableColumnMenu: false
+                width: '15%',
+                enableColumnMenu: false,
+                cellTooltip: true,
+                headerTooltip:true
             },
 
             {
                 field: 'Account_Status__c',
                 name: 'Account Status',
-                enableColumnMenu: false
+                enableColumnMenu: false,
+                cellTooltip: true,
+                headerTooltip:true
             }, {
                 field: 'Financial_Account__r.Manager_Sales_Code__c',
-                name: 'Sales / Manager Code',
+                name: 'Manager / Sales Code',
                 enableColumnMenu: false,
+                cellTooltip: true,
+                headerTooltip:true
             }, {
                 name: 'Discretionary',
                 field: 'Discretionary__c',
                 enableColumnMenu: false,
+                cellTooltip: true,
+                headerTooltip:true
             }, {
                 field: 'AccountValueOP',
                 name: 'Account Value - OP',
+                width: '9%',
                 enableColumnMenu: false,
+                cellTooltip: true,
+                headerTooltip:true,
                 displayName: 'Total OP Value',
                 customTreeAggregationFinalizerFn: function(aggregation) {
                     aggregation.rendered = aggregation.value;
@@ -146,6 +163,9 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
             }, {
                 field: 'AccountValueIP',
                 name: 'Account Value - IP',
+                width: '9%',
+                cellTooltip: true,
+                headerTooltip:true,
                 enableColumnMenu: false,
                 displayName: 'Total IP Value',
                 customTreeAggregationFinalizerFn: function(aggregation) {
@@ -160,15 +180,15 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
         ],
 
         onRegisterApi: function(gridApi) {
-            
+
             $scope.gridApi = gridApi;
             $scope.gridApi.grid.registerColumnsProcessor(setGroupValues, 410);
             $scope.gridApi.grid.registerDataChangeCallback(function() {
-                if($scope.gridApi.grid.treeBase.tree instanceof Array){
+                if ($scope.gridApi.grid.treeBase.tree instanceof Array) {
                     $scope.gridApi.treeBase.expandAllRows();
                 }
-                
-            }); 
+
+            });
         }
     };
 
