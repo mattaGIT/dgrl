@@ -13,6 +13,7 @@
     <script type="text/javascript">
         angular.module('sf',[]).constant('sf', {
                 Id : "{!objectId}",
+                baseURL:"{!baseURL}",
                 Grouping_1_Field : "{!Grouping_1_Field}",
                 Grouping_1_Object : "{!Grouping_1_Object}",
                 Grouping_1_Field_Set : "{!Grouping_1_Field_Set}",
