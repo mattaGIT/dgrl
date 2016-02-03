@@ -63,8 +63,10 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
     $scope.object2.groupingField = sf.Grouping_2_Field;
     $scope.object2.groupingFieldSet = sf.Grouping_2_Field_Set;
     $scope.object2.groupingParentField = sf.Grouping_2_Parent_Field;
+    $scope.object2.whereCondition = 'inActive__c = false AND Account_Status__c!= \'Closed\'';
 
     $scope.faMap = [];
+    $scope.grandTotal = {};
 
     $scope.gridOptions = {
         rowHeight: 23,
@@ -73,6 +75,7 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
         enableFiltering: false,
         enableSorting: true,
         groupingShowCounts: false,
+        enableHorizontalScrollbar:uiGridConstants.scrollbars.NEVER,
         columnDefs: [{
                 name: 'Person / Entity',
                 displayName: 'Person / Entity',
@@ -108,7 +111,7 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
                     priority: 2,
                     direction: 'asc'
                 },
-                cellTemplate: '<div class="ui-grid-cell-contents"><a target="_parent" href="{{grid.appScope.baseURL}}/{{row.entity.Financial_Account__c}}" class="ui-grid-cell-contents">{{COL_FIELD CUSTOM_FILTERS}}</a></div>'
+                cellTemplate: '<div class="ui-grid-cell-contents"><a target="_parent" href="/{{row.entity.Financial_Account__c}}" class="ui-grid-cell-contents">{{COL_FIELD CUSTOM_FILTERS}}</a></div>'
 
             }, {
                 name: 'Account Name',
@@ -159,7 +162,7 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
                 footerCellFilter: 'currency',
                 treeAggregationType: uiGridGroupingConstants.aggregation.SUM,
                 cellTemplate: '<div><div class="ui-grid-cell-contents isNumeric" title="TOOLTIP">{{COL_FIELD CUSTOM_FILTERS}}</div></div>',
-                footerCellTemplate: '<div><div class="ui-grid-cell-contents isNumeric">{{col.aggregationValue|currency}}</div></div>'
+                footerCellTemplate: '<div><div class="ui-grid-cell-contents isNumeric">{{grid.appScope.grandTotal.op|currency}}</div></div>'
             }, {
                 field: 'AccountValueIP',
                 name: 'Account Value - IP',
@@ -175,7 +178,7 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
                 footerCellFilter: 'currency',
                 treeAggregationType: uiGridGroupingConstants.aggregation.SUM,
                 cellTemplate: '<div><div class="ui-grid-cell-contents isNumeric" title="TOOLTIP">{{COL_FIELD CUSTOM_FILTERS}}</div></div>',
-                footerCellTemplate: '<div><div class="ui-grid-cell-contents isNumeric">{{col.aggregationValue|currency}}</div></div>'
+                footerCellTemplate: '<div><div class="ui-grid-cell-contents isNumeric">{{grid.appScope.grandTotal.ip|currency}}</div></div>'
             }
         ],
 
@@ -193,6 +196,7 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
     };
 
     function applyRules(fas) {
+        
         var faN;
         var faE;
         var fapId;
@@ -204,11 +208,13 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
             faE = fas[i].Entity__c;
             fapId = fas[i].Id;
             faType = (fas[i].Role__c == 'Interested Party') ? 'i' : 'o';
+            //the existing map element
             fa = _.find(faMap, {
                 'faNum': faN,
-                'faE': faE
+                'faE': faE 
             });
             if (!fa) {
+                //doesnt exist so add it
                 faMap.push({
                     'faNum': faN,
                     'faE': faE,
@@ -216,6 +222,7 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
                     'Id': fapId
                 });
             } else if (fa.type == 'i' && faType == 'o') {
+                //owner takes precendence
                 _.remove(faMap, {
                     'faNum': faN,
                     'faE': faE
@@ -240,6 +247,11 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
             }
 
         }
+        var u = function(n){return n.Financial_Account__r.Account_Number__c+''+n.Role__c}
+        var uniqueOpAccounts = _.uniq(_.filter(fas,'AccountValueOP'),'Financial_Account__r.Account_Number__c');
+        var uniqueIpAccounts = _.uniq(_.filter(fas,'AccountValueIP'),'Financial_Account__r.Account_Number__c');
+        $scope.grandTotal.op = _.sum(uniqueOpAccounts,'AccountValueOP');
+        $scope.grandTotal.ip = _.sum(uniqueIpAccounts,'AccountValueIP');
         return fas;
     }
     $scope.getId = function(row) {
