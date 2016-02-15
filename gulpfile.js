@@ -190,12 +190,12 @@ gulp.task('connect', function(){
 
 gulp.task('zip-staticresource', function () {
     return gulp.src('**/*', {cwd:path.join(process.cwd(), 'build')})
-        .pipe(zip('SL_DGRL.resource'))
+        .pipe(zip('SL_DGRL2.resource'))
         .pipe(gulp.dest('src/staticresources'));
 });
 
 gulp.task('meta-staticresource', function () {
-    return createFileFromString('SL_DGRL.resource-meta.xml', '<?xml version="1.0" encoding="UTF-8"?><StaticResource xmlns="http://soap.sforce.com/2006/04/metadata"><cacheControl>Private</cacheControl><contentType>application/zip</contentType></StaticResource>')
+    return createFileFromString('SL_DGRL2.resource-meta.xml', '<?xml version="1.0" encoding="UTF-8"?><StaticResource xmlns="http://soap.sforce.com/2006/04/metadata"><cacheControl>Private</cacheControl><contentType>application/zip</contentType></StaticResource>')
         .pipe(gulp.dest('src/staticresources'));
 });
 
