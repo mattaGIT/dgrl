@@ -1,0 +1,24 @@
+<div ng-controller=mainCtrl class="container">
+    <div class="col-xs-6">
+        <v-accordion class="vAccordion--default">
+            <v-pane expanded>
+                <v-pane-header>
+                    Main Object
+                </v-pane-header>
+
+                <v-pane-content>
+                    <form class="form-horizontal">
+                        <div angucomplete-alt id="ex1" placeholder="Related Object" maxlength="50" pause="100" selected-object="selectedCountry" local-data="sObjectNames" search-fields="Name,Label" title-field="Name" description-field="Label" minlength="2" input-class="form-control form-control-small" match-class="highlight"></div>
+                            <label class="control-label col-sm-4"> Main Object </label>
+                            <div class="col-sm-8">
+                                <input type="text" ng-model="selected" uib-typeahead="state for state in states | filter:$viewValue | limitTo:8" class="form-control">
+                            </div>
+                        </div>
+                    </form>
+                                <related-object></related-object>
+                </v-pane-content>
+            </v-pane>
+
+        </v-accordion>
+    </div>
+</div>

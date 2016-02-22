@@ -1,0 +1,22 @@
+<v-pane enabled>
+    <v-pane-header>
+        Related Object
+    </v-pane-header>
+    <v-pane-content>
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label class="control-label col-sm-4"><i class="fa fa-home"></i> Main Object </label>
+                <div class="col-sm-8">
+                    <div class="col-sm-8">
+                        <input type="text" ng-model="selected" uib-typeahead="state for state in states | filter:$viewValue | limitTo:8" class="form-control">
+                    </div>
+                </div>
+                <label class="control-label col-sm-4"><i class="fa fa-home"></i> Where Clause</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control " ng-model="r.WHERE" bs-typeahead>
+                </div>
+            </div>
+        </form>
+
+    </v-pane-content>
+</v-pane>
