@@ -1,0 +1,5 @@
+dgrl/bower_components/*
+dgrl-setup/bower_components/*
+*/node_modules/*
+resource-bundles/*
+*/build/*
