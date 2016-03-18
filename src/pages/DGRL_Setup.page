@@ -1,0 +1,23 @@
+<apex:page standardController="DGRL__c" extensions="DGRL_Setup" standardStylesheets="false" showHeader="false">
+    <head>
+        <apex:stylesheet value="{!URLFOR($Resource.DGRL_Setup, 'styles/lib.css')}"></apex:stylesheet>
+        <apex:stylesheet value="{!URLFOR($Resource.DGRL_Setup, 'styles/main.css')}"></apex:stylesheet>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    </head>
+    <body>
+        <div ng-app="myApp">
+            <dgrl-setup></dgrl-setup>
+        </div>
+
+        <apex:includescript value="{!URLFOR($Resource.DGRL_Setup, 'scripts/lib.js')}"></apex:includescript>
+        <apex:includescript value="{!URLFOR($Resource.DGRL_Setup, 'scripts/templates.js')}"></apex:includescript>
+        <apex:includescript value="{!URLFOR($Resource.DGRL_Setup, 'scripts/main.js')}"></apex:includescript>
+        <c:ngforce ></c:ngforce>
+        <script type="text/javascript">
+            angular.module('sf', []).constant('sf', {
+                id: "{!DGRL__c.Id}",
+                name: "{!DGRL__c.Name}"
+            });
+        </script>
+    </body>
+</apex:page>

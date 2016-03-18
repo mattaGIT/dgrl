@@ -1,0 +1,10 @@
+<md-list flex="50">
+    <md-header class="md-sticky">Available Columns</md-header>
+
+    <md-list-item class="md-3-line" ng-repeat="field in main.fields">
+        <div class="md-list-item-text" layout="column">
+            <h3>{{ field.Label }}</h3>
+            <h4>{{ field.Name }}</h4>
+        </div>
+    </md-list-item>
+</md-list>

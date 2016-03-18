@@ -1,0 +1,9 @@
+/* style.css */
+/* BASIC STYLINGS
+============================================================================= */
+
+#status-buttons a               { color:#FFF; display:inline-block; font-size:12px; text-align:center; text-transform:uppercase; }
+#status-buttons .wizard-label         { text-transform:uppercase; line-height: normal;font-weight:bold;}
+#status-buttons div.active .md-button.md-docs-dark-theme.md-raised   {background-color:#03A9F4;}
+#status-buttons div.active .wizard-label    {color:#03A9F4;}
+.wizard-label {padding-top:1px}

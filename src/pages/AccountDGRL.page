@@ -1,0 +1,3 @@
+<apex:page standardController="Account" applyBodyTag="false">
+	<c:DGRL DGRLName="ContactsAndFAs" mainObjectId="{!Id}"></c:DGRL>
+</apex:page>

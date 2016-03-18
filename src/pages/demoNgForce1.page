@@ -1,0 +1,61 @@
+<apex:page controller="demoNgForce1Page" showHeader="false" sidebar="false" standardStylesheets="false" docType="html-5.0" language="en-US" applyHTMLTag="false" applyBodyTag="false">
+
+    <head>
+        <meta charset="utf-8"></meta>
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width"></meta>
+        <!-- styling -->
+        <apex:stylesheet value="{!URLFOR($Resource.ngForce1, 'css/bootstrap.css')}"></apex:stylesheet>
+        <!-- end -->
+    </head>
+
+    <body>
+        <!-- app bootstraps from here -->
+        <div ng-app="demoNgForce1" ng-controller="main">
+            <div class="container-fluid">
+                <div class="jumbotron">
+                    <h1>Hello World!</h1>
+                </div>
+                <ul class="nav nav-pills nav-stacked col-xs-3 panel">
+                    <li data-ng-repeat="(key,value) in schema" class="list-group-item">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            {{key}}
+                        </a>
+                    </li>
+                </ul>
+                <div> {{schema['Account']}}</div>
+            </div>
+        </div>
+        <!-- end -->
+        <!-- include vf constants and globals  -->
+        <script>
+        angular.module('vfContext', []).constant('vfContext', {
+            firstName: '{!$User.firstName}'
+        });
+        </script>
+        <!-- end -->
+        <!-- the angular code for the demo -->
+        <script>
+        angular.module('demoNgForce1', ['ngForce', 'vfContext']);
+        angular.module('demoNgForce1').controller('main', function($scope,$filter, vfr, vfContext) {
+            $scope.schema;
+
+            $scope.getGlobalDescribe = vfr.send('demoNgForce1Page.getSobjectFields');
+            $scope.getGlobalDescribe().then(
+                function(results) {
+                    if (results) {
+                        $scope.schema = results;
+                    }
+                },
+                function(error){
+                    console.log(error);
+                }
+            );
+
+        });
+        </script>
+        <!-- includes all of ngForce! -->
+        <apex:includescript value="{!URLFOR($Resource.ngForce1, 'js/ngForce1WithDeps.js')}" />
+        <c:ngforce />
+        <!-- end -->
+    </body>
+</apex:page>
