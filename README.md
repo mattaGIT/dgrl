@@ -17,10 +17,11 @@ A package to quickly create complex custom related list.
 3. Create a wrapper visualforce page with the following markup:
 
 	```java
-	<apex:page standardController="<objectController>" applyBodyTag="false">
-	    <c:DGRL DGRLName="<dgrlName>" mainObjectId="{!Id}"></c:DGRL>
-	</apex:page>
+	    <apex:page standardController="<objectController>" applyBodyTag="false">
+	        <c:DGRL DGRLName="<dgrlName>" mainObjectId="{!Id}"></c:DGRL>
+	    </apex:page>
 	```
+
 	* ***objectController*** would be the name of the object in the detail page. For example, if the DGRL is going on the Account detail page this would be "Account"
 	* ***dgrlName*** would be DGRL__c.Name specified in step 2 above.
 
@@ -154,4 +155,3 @@ $scope.gridOptions = {
             }
         ], 
 ```
-
