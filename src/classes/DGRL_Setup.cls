@@ -4,19 +4,21 @@ public class DGRL_Setup
     {
 
     }
-    @remoteAction
-    public static result saveEverything(list<DGRL__c> dgrl,list<Relationship__c> rs)
-    {
-        try
-        {
-
-            list<Database.UpsertResult> ur = Database.upsert(dgrl,Schema.Account,false);
-            return new result(ur);
-        }
-        catch(exception e){
-            return new result(e);
-        }
-    }
+    // @remoteAction
+    // public static String saveEverything(list<DGRL__c> dgrl,list<Relationship__c> rs)
+    // {
+    //     list<map<String,String>> objectDescribes = new list<map<String,String>>();
+    //
+    //     list<Schema.DescribeSObjectResult> dsors = Schema.describeSObjects(new list<String>(Schema.getGlobalDescribe().keySet()));
+    //     for(Schema.DescribeSObjectResult dsor:dsors)
+    //     {
+    //         map<String,String> sObjectDes = new map<String,String>();
+    //         sObjectDes.put('Name',dsor.getName());
+    //         sObjectDes.put('Label',dsor.getLabel());
+    //         objectDescribes.add(sObjectDes);
+    //     }
+    //     return null;
+    // }
     @remoteAction
     public static list<map<String,String>> getSobjectNames()
     {
