@@ -25,9 +25,12 @@ function createFileFromString(filename, string) {
   return src
 }
 
-gulp.task('scripts', function(){
+gulp.task('scripts', function() {
     //combine all js files of the app
-    gulp.src(['!./**/*_test.js','./**/*.js'])
+    gulp.src(['!./app/**/*_test.js', './app/**/*.js'])
+    .pipe(order([
+        "app.js"
+    ]))
         .pipe(ngAnnotate())
         .pipe(concat('main.js'))
         .pipe(gulp.dest('./build/scripts'));
@@ -206,9 +209,9 @@ gulp.task('meta-staticresource', function () {
 
 gulp.task('save', ['zip-staticresource','meta-staticresource']);
 gulp.task('buildMinified', ['scriptsMinified', 'templates', 'customCSSMinified', 'vendorFonts', 'customFonts', 'copy-index', 'vendorJSMinified', 'vendorCSS', 'angularGridFonts']);
-gulp.task('buildOnly', ['scripts','templates','customCSS','vendorFonts','customFonts','copy-index','vendorJS','vendorCSS', 'angularGridFonts']);
-gulp.task('build', ['connect', 'buildOnly','watch']);
+gulp.task('buildOnly', ['scripts', 'templates', 'customCSS', 'customFonts', 'vendorFonts', 'vendorJS', 'vendorCSS']);
+gulp.task('build', ['connect', 'scripts', 'templates', 'customCSS', 'customFonts', 'vendorFonts', 'vendorJS', 'vendorCSS', 'watch']);
 gulp.task('cleanAndBuild', ['cleanBuild'], function() {
-  gulp.start('build');
+    gulp.start('build');
 });
-gulp.task('default',['cleanAndBuild']);
+gulp.task('default', ['cleanAndBuild']);

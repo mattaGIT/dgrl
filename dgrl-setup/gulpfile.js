@@ -231,7 +231,7 @@ gulp.task('meta-staticresource', function() {
 gulp.task('save', ['zip-staticresource', 'meta-staticresource']);
 gulp.task('buildMinified', ['scriptsMinified', 'templates', 'customCSSMinified', 'vendorFonts', 'customFonts', 'copy-index', 'vendorJSMinified', 'vendorCSS', 'angularGridFonts']);
 gulp.task('buildOnly', ['scripts', 'templates', 'customCSS', 'customFonts', 'vendorFonts', 'vendorJS', 'vendorCSS']);
-gulp.task('build', ['connect', 'buildOnly', 'watch']);
+gulp.task('build', ['connect', 'scripts', 'templates', 'customCSS', 'customFonts', 'vendorFonts', 'vendorJS', 'vendorCSS', 'watch']);
 gulp.task('cleanAndBuild', ['cleanBuild'], function() {
     gulp.start('build');
 });
