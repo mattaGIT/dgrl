@@ -17,10 +17,6 @@
         <name>ApexTrigger</name>
     </types>
     <types>
-        <members>DGRL_App</members>
-        <name>CustomApplication</name>
-    </types>
-    <types>
         <members>DGRLRelationship__c</members>
         <members>DGRLSettings__c</members>
         <members>DGRL__c</members>
