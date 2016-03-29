@@ -29,16 +29,19 @@ var dgrlSetup = angular.module('myApp', ['ngMaterial', 'ngMessages', 'templates'
     //     $urlRouterProvider.otherwise('/objects.html');
     // })
     .directive('relatedObject', function() {
-        var controller = function($scope) {
-            // $scope.isJoiner = ($scope.relationship.type == 'joiner');
-            // $scope.relationship.order = $scope.$index;
+        var controller = function($scope, $mdToast) {
+            $scope.p = $scope.main;
+            $scope.getRCount = function() {
+                return $scope.p.relationships.length;
+            }
         }
         return {
             templateUrl: 'views/related.html',
-            controller: controller
+            controller: controller,
+            replace: true
         }
     })
-    .controller('mainCtrl', function($scope, $templateCache, vfr, $timeout, sf, $mdDialog) {
+    .controller('mainCtrl', function($scope, $templateCache, vfr, $timeout, sf, $mdDialog, $mdToast) {
 
         //for matching
         function textMatch(query) {
@@ -67,7 +70,6 @@ var dgrlSetup = angular.module('myApp', ['ngMaterial', 'ngMessages', 'templates'
             return results;
         }
         ///main vars
-        console.log(sf.Id);
         var self = this;
         self.dgrl = {
             'name': sf.name,
@@ -75,9 +77,6 @@ var dgrlSetup = angular.module('myApp', ['ngMaterial', 'ngMessages', 'templates'
         };
         // self.mainObject = {};
         self.relationships = [];
-        self.relationships.push({
-            type: 'main'
-        });
         //query vars
         self.sObjects = [];
         self.fields = [];
@@ -85,6 +84,7 @@ var dgrlSetup = angular.module('myApp', ['ngMaterial', 'ngMessages', 'templates'
         //queries
         self.getDescribeSobjects = vfr.send('DGRL_Setup.getSobjectNames', vfr.standardOptions, false);
         self.getFieldDescribe = vfr.send('DGRL_Setup.getFieldDescribe', vfr.standardOptions, false);
+
 
 
         //binding with database sfdc->client
@@ -138,45 +138,70 @@ var dgrlSetup = angular.module('myApp', ['ngMaterial', 'ngMessages', 'templates'
                 self.fields = _.union(self.fields, r.fields);
             })
         };
-        //for the fab button
-        self.addRelationship = function(type) {
-            if (self.relationships.length != 0) {
-                var relationship = {
-                    'type': type,
-                    'parentObject': self.relationships[self.relationships.length - 1]
-                };
-            } else {
-                var relationship = {
-                    'type': type,
-                    'parentObject': self.mainObject
-                };
-            }
 
-            self.relationships.push(relationship);
+        
+        self.noRelationships=true;
+        self.checkEmpty = function() {
+            if (self.noRelationships) {
+                self.showDialog();
+            }
+        }
+        ////dialog
+
+        $scope.$watch('relationships', function() {
+            if (self.relationships.length != 0)
+                self.noRelationships = false;
+        });
+        self.object={};
+        self.showDialog = function() {
+
+            $mdDialog.show({
+                controller: DialogController,
+                templateUrl: 'views/objects.toast.html',
+                // parent: document.getElementById('toast-container'),
+                clickOutsideToClose: true,
+                fullscreen: false,
+                scope: $scope,
+                openFrom: document.getElementById('toast-container')
+            })
+                .then(function(answer) {
+                    self.object.status = 'resolved';
+                }, function() {
+                    $scope.status = 'cancelled';
+                });
+
         };
 
-        //fab code
-        $scope.addFAB = {};
-        $scope.addFAB.isOpen = true;
-        $scope.addFAB.tooltipVisible = false;
-        // On opening, add a delayed property which shows tooltips after the speed dial has opened
-        // so that they have the proper position; if closing, immediately hide the tooltips
-        $scope.$watch('addFAB.isOpen', function(isOpen) {
-            if (isOpen) {
-                $timeout(function() {
-                    $scope.addFAB.tooltipVisible = $scope.addFAB.isOpen;
-                }, 600);
-            } else {
-                $scope.addFAB.tooltipVisible = $scope.addFAB.isOpen;
-            }
-        });
-        //translation
+
+        function DialogController($scope, $mdDialog) {
+            $scope.o = {};
+            $scope.relationship = {};
+            $scope.hide = function() {
+                $mdDialog.hide();
+            };
+
+            $scope.cancel = function() {
+                $mdDialog.cancel();
+            };
+
+            $scope.answer = function() {
+                $mdDialog.hide();
+            };
+        }
+
 
     })
     .config(function($mdThemingProvider) {
-        // Configure a dark theme with primary foreground yellow
-        $mdThemingProvider.theme('docs-dark', 'default')
-            .primaryPalette('light-blue')
-            .dark();
-
-    })
+        $mdThemingProvider.theme('default')
+            .primaryPalette('teal', {
+                'default': '600', // by default use shade 400 from the pink palette for primary intentions
+                'hue-1': '700', // use shade 100 for the <code>md-hue-1</code> class
+                'hue-2': '700', // use shade 600 for the <code>md-hue-2</code> class
+                'hue-3': '900' // use shade A100 for the <code>md-hue-3</code> class
+            })
+        // If you specify less than all of the keys, it will inherit from the
+        // default shades
+        .accentPalette('lime', {
+            'default': '400' // use shade 200 for default, and keep all other shades the same
+        });
+    });

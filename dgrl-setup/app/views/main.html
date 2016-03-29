@@ -1,4 +1,4 @@
-<div ng-controller="mainCtrl as main" ng-cloak="" class="md-inline-form fabSpeedDialdemoMoreOptions">
+<div ng-controller="mainCtrl as main"  >
     <md-toolbar>
         <div class="md-toolbar-tools">
             <md-button aria-label="Go Back">
@@ -14,17 +14,15 @@
         </h2>
         </div>
     </md-toolbar>
-    <md-content>
-        <md-tabs class="md-accent" md-dynamic-height="" md-align-tabs="top">
-            <md-tab id="tab1">
-                <md-tab-label>
+        <md-tabs class="md-accent" md-stretch-tabs="always">
+            <md-tab md-on-select="main.checkEmpty()">
+                <div flex ng-include src="'views/objects.html'" />
+                <md-tab-label class="md-accent">
                     <md-icon aria-label="objects">extension</md-icon>
                     <span>Objects</span>
                 </md-tab-label>
-                <md-tab-body layout-fill>
-                    <md-content>
-                        <div ng-include src="'views/objects.html'" />
-                    </md-content>
+                <md-tab-body >
+                    <div  flex ng-include src="'views/objects.html'" />
                 </md-tab-body>
             </md-tab>
             <md-tab id="tab2" ng-disabled="data.secondLocked">
@@ -46,5 +44,4 @@
                 </md-tab-body>
             </md-tab>
         </md-tabs>
-        </md-content>
 </div>

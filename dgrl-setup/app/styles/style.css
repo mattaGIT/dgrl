@@ -1,17 +1,22 @@
 .isNumeric {
     text-align: right;
 }
-/*.highlight {
-    font-weight: bold;
-}*/
-
-md-tabs.stretch-height md-tab-content>div{
+.full-height{
     margin: 0;
-    width: 100%;
-    min-height: 100%;
-    height: 100%;
+    width: 100% !important;
+    min-height: 100% !important;
+    height: 100% !important;
 }
-
+md-tab-content>div
+{
+    margin: 0;
+    width: 100% !important;
+    min-height: 100% !important;
+    height: 100% !important;
+}
+md-dialog md-input-container{
+    padding-bottom:2px !important;
+}
 /*fab Styling*/
 md-fab-actions div.md-fab-action-item{
     margin-left: 50px;

@@ -1,9 +1,38 @@
-<div ng-repeat="relationship in main.relationships">
-    <related-object relationship="relationship" />
+<div layout="column">
+    <div layout="row" layout-padding layout-align="center stretch">
+        <div layout="column" flex="50">
+            <md-card flex="100">
+                <md-card-title>
+                    <md-card-title-text >
+                        <span class="md-headline">{{object.Name}}</span>
+                        <span class="md-subhead">{{object.Label}}</span>
+                    </md-card-title-text>
+                    <md-card-title-media>
+                    </md-card-title-media>
+                </md-card-title>
+                <md-card-actions ng-if="relationship.object.Name" layout="row" layout-align="space-around stretch">
+                    <md-button ng-click="showActionToast()" aria-label="child" class="md-mini">
+                        <md-tooltip md-direction="top" md-visible="false">Add Child Object</md-tooltip>
+                        <md-icon aria-label="child" ng-click>wb_incandescent</md-icon>
+                    </md-button>
+                    <md-button ng-click="showActionToast()" aria-label="joiner" class="md-mini">
+                        <md-tooltip md-direction="top" md-visible="false">Add Lookup</md-tooltip>
+                        <md-icon aria-label="joiner">wb_iridescent</md-icon>
+                    </md-button>
+                </md-card-actions>
+            </md-card>
+        </div>
+    </div>
+    <related-object ng-repeat="relationship in main.relationships" relationship="relationship">
+    </related-object>
+    <md-button ng-click="main.showDialog()">
+        <span>showDialog</span>
+    </md-button>
+    <div id="dialog-container"  style="height:100px;overflow:hidden"> </div>
+    
 </div>
 <!-- <div class="lock-size" layout="row"> -->
-
-<md-fab-speed-dial layout-padding md-direction="right" layout-align="center center" md-open="addFAB.isOpen" class="md-scale md-hover-full" ng-mouseenter="addFAB.isOpen=true" ng-mouseleave="addFAB.isOpen=false">
+<!-- <md-fab-speed-dial layout-padding md-direction="right" layout-align="center center" md-open="addFAB.isOpen" class="md-scale md-hover-full" ng-mouseenter="addFAB.isOpen=true" ng-mouseleave="addFAB.isOpen=false">
     <md-fab-trigger>
         <md-button aria-label="menu" class="md-fab md-warn">
             <md-tooltip md-direction="bottom">Add Related Object</md-tooltip>
@@ -26,4 +55,4 @@
         </div>
 
     </md-fab-actions>
-</md-fab-speed-dial>
+</md-fab-speed-dial> -->

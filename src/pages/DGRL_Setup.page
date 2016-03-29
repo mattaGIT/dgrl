@@ -1,12 +1,13 @@
 <apex:page standardController="DGRL__c" extensions="DGRL_Setup" standardStylesheets="false" showHeader="false">
     <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <apex:stylesheet value="{!URLFOR($Resource.DGRL_Setup, 'styles/lib.css')}"></apex:stylesheet>
         <apex:stylesheet value="{!URLFOR($Resource.DGRL_Setup, 'styles/main.css')}"></apex:stylesheet>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
     </head>
     <body>
-        <div ng-app="myApp">
-            <dgrl-setup></dgrl-setup>
+        <div ng-cloak="" style="width:100%;height:100%" ng-app="myApp" >
+            <dgrl-setup ></dgrl-setup>
         </div>
 
         <apex:includescript value="{!URLFOR($Resource.DGRL_Setup, 'scripts/lib.js')}"></apex:includescript>
