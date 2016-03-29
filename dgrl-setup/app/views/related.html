@@ -1,31 +1,26 @@
 
-<div layout="row" layout-padding layout-align="start stretch">
-    <div layout="column" flex="50">
-   <md-card ng-if="main.relationships.length>=0" ng-click="" flex="100">
+<div>
+   <md-card ng-click="" flex="100">
         <md-card-title >
-            <md-card-title-text ng-if="relationship.type!='main' && !relationship.object.Name">
-                <span class="md-headline">{{relationship.object.Name}}</span>
-                <span class="md-subhead">{{relationship.object.Label}}</span>
-            </md-card-title-text>
-            <md-card-title-text >
-                <span class="md-headline">Main object</span>
-                <span class="md-subhead">Tap to edit</span>
+            <md-card-title-text>
+                <span class="md-headline">{{relationship.Name}}</span>
+                <span class="md-subhead">{{relationship.type}}</span>
             </md-card-title-text>
             <md-card-title-media >
             </md-card-title-media >
         </md-card-title>
-        <md-card-actions ng-if="relationship.object.Name" layout="row" layout-align="space-around stretch">
-            <md-button ng-click="showActionToast()" aria-label="child" class="md-mini">
-                <md-tooltip md-direction="top" md-visible="false">Add Child Object</md-tooltip>
-                <md-icon aria-label="child" ng-click>wb_incandescent</md-icon>
-            </md-button>
-            <md-button ng-click="showActionToast()" aria-label="joiner" class="md-mini">
-                <md-tooltip md-direction="top" md-visible="false">Add Lookup</md-tooltip>
-                <md-icon aria-label="joiner">wb_iridescent</md-icon>
-            </md-button>
-        </md-card-actions>
-    </md-card>
-    
+
+        <!-- <md-card-actions layout="row" layout-align="space-around stretch">
+             <md-button ng-click="showDialog()" aria-label="child" class="md-mini">
+             <md-tooltip md-direction="top" md-visible="false">Add Child Object</md-tooltip>
+             <md-icon aria-label="child" ng-click>wb_incandescent</md-icon>
+             </md-button>
+             <md-button ng-click="showDialog()" aria-label="joiner" class="md-mini">
+             <md-tooltip md-direction="top" md-visible="false">Add Lookup</md-tooltip>
+             <md-icon aria-label="joiner">wb_iridescent</md-icon>
+             </md-button>
+             </md-card-actions>
+           -->  </md-card>
 </div>
 
 

@@ -27,17 +27,14 @@ var dgrlSetup = angular.module('myApp', ['ngMaterial', 'ngMessages', 'templates'
     //     // catch all route
     //     // send users to the form page
     //     $urlRouterProvider.otherwise('/objects.html');
-    // })
+// })
+   
     .directive('relatedObject', function() {
-        var controller = function($scope, $mdToast) {
-            $scope.p = $scope.main;
-            $scope.getRCount = function() {
-                return $scope.p.relationships.length;
-            }
-        }
         return {
+          scope: {
+            relationship: '=relationship'
+          },
             templateUrl: 'views/related.html',
-            controller: controller,
             replace: true
         }
     })
@@ -144,7 +141,7 @@ var dgrlSetup = angular.module('myApp', ['ngMaterial', 'ngMessages', 'templates'
         self.noRelationships=true;
         self.checkEmpty = function() {
             if (self.noRelationships) {
-                self.showDialog();
+                //self.showDialog();
             }
         }
         ////dialog
@@ -154,26 +151,29 @@ var dgrlSetup = angular.module('myApp', ['ngMaterial', 'ngMessages', 'templates'
                 self.noRelationships = false;
         });
         self.object={};
-        self.showDialog = function() {
+        self.showDialog = function(type) {
 
             $mdDialog.show({
                 controller: DialogController,
                 templateUrl: 'views/objects.toast.html',
                 clickOutsideToClose: true,
                 fullscreen: false,
-                scope: $scope,
-                preserveScope:true
+              locals: {
+                main: $scope.main,
+                type: type
+              }
             })
-                .then(function(o) {
-                    // self.object = o;
-                }, function(o) {
+            .then(function(o) {
+              self.relationships.push(o)
+            }, function(o) {
                     // self.object = o;
                 });
 
         };
 
 
-        function DialogController($scope, $mdDialog) {
+      function DialogController($scope, $mdDialog, main, type) {
+            $scope.main = main
             $scope.relationship = {};
             $scope.hide = function() {
                 $mdDialog.hide($scope.o);
@@ -184,7 +184,8 @@ var dgrlSetup = angular.module('myApp', ['ngMaterial', 'ngMessages', 'templates'
             };
 
             $scope.answer = function() {
-                $mdDialog.hide($scope.o);
+                $scope.selectedObject.type = type
+                $mdDialog.hide($scope.selectedObject);
             };
         }
 
@@ -204,3 +205,12 @@ var dgrlSetup = angular.module('myApp', ['ngMaterial', 'ngMessages', 'templates'
             'default': '400' // use shade 200 for default, and keep all other shades the same
         });
     });
+
+
+[
+  {
+    
+  }
+]
+
+

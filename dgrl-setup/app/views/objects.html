@@ -1,30 +1,18 @@
-<div layout="column">
-    <div layout="row" layout-padding layout-align="center stretch">
-        <div layout="column" flex="50">
-            <md-card flex="100">
-                <md-card-title>
-                    <md-card-title-text >
-                        <span class="md-headline">{{main.object.Name}}</span>
-                        <span class="md-subhead">{{main.object.Label}}</span>
-                    </md-card-title-text>
-                    <md-card-title-media>
-                    </md-card-title-media>
-                </md-card-title>
-                <md-card-actions ng-if="main.object.Name" layout="row" layout-align="space-around stretch">
-                    <md-button ng-click="showActionToast()" aria-label="child" class="md-mini">
+<div>
+    <related-object ng-repeat="relationship in main.relationships track by $index" relationship="relationship" showDialog="main.showDialog">
+    </related-object>
+    <div style="display: flex" layout-padding layout-align="center stretch">
+        <div>
+                    <md-button ng-click="main.showDialog('child')" aria-label="child" class="md-mini">
                         <md-tooltip md-direction="top" md-visible="false">Add Child Object</md-tooltip>
                         <md-icon aria-label="child" ng-click>wb_incandescent</md-icon>
                     </md-button>
-                    <md-button ng-click="showActionToast()" aria-label="joiner" class="md-mini">
+                    <md-button ng-click="main.showDialog('lookup')" aria-label="joiner" class="md-mini">
                         <md-tooltip md-direction="top" md-visible="false">Add Lookup</md-tooltip>
                         <md-icon aria-label="joiner">wb_iridescent</md-icon>
                     </md-button>
-                </md-card-actions>
-            </md-card>
         </div>
     </div>
-    <related-object ng-repeat="relationship in main.relationships" relationship="relationship">
-    </related-object>
     <md-button ng-click="main.showDialog()">
         <span>showDialog</span>
     </md-button>
@@ -56,3 +44,4 @@
 
     </md-fab-actions>
 </md-fab-speed-dial> -->
+
