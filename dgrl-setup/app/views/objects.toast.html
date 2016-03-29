@@ -3,7 +3,7 @@
         <md-dialog-content>
                 <md-autocomplete flex
                  class="md-block"
-                  md-selected-item="o.Name" 
+                  md-selected-item="main.object" 
                   md-search-text="relationship.searchText" 
                   md-items="item in main.getSO(relationship.searchText)" 
                   md-item-text="item.Name" 
@@ -16,10 +16,10 @@
                 </md-autocomplete>
         </md-dialog-content>
         <md-dialog-actions layout="row">
-            <md-button ng-click="answer(o)">
+            <md-button ng-click="answer()">
                 Done
             </md-button>
-            <md-button ng-click="cancel(o)" style="margin-right:20px;">
+            <md-button ng-click="cancel()" style="margin-right:20px;">
                 Cancel
             </md-dialog-actions>
         </div>

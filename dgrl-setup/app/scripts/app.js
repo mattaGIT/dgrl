@@ -98,6 +98,7 @@ var dgrlSetup = angular.module('myApp', ['ngMaterial', 'ngMessages', 'templates'
                 return filterResults(searchText, self.sObjects);
             }
         };
+        self.getSO();
         self.getFD = function(searchText, r) {
             return self.getFieldDescribe(r.object.Name).then(function(results) {
                 r.fields = lowerCaseResults(results);
@@ -158,34 +159,32 @@ var dgrlSetup = angular.module('myApp', ['ngMaterial', 'ngMessages', 'templates'
             $mdDialog.show({
                 controller: DialogController,
                 templateUrl: 'views/objects.toast.html',
-                // parent: document.getElementById('toast-container'),
                 clickOutsideToClose: true,
                 fullscreen: false,
                 scope: $scope,
-                openFrom: document.getElementById('toast-container')
+                preserveScope:true
             })
-                .then(function(answer) {
-                    self.object.status = 'resolved';
-                }, function() {
-                    $scope.status = 'cancelled';
+                .then(function(o) {
+                    // self.object = o;
+                }, function(o) {
+                    // self.object = o;
                 });
 
         };
 
 
         function DialogController($scope, $mdDialog) {
-            $scope.o = {};
             $scope.relationship = {};
             $scope.hide = function() {
-                $mdDialog.hide();
+                $mdDialog.hide($scope.o);
             };
 
             $scope.cancel = function() {
-                $mdDialog.cancel();
+                $mdDialog.cancel($scope.o);
             };
 
             $scope.answer = function() {
-                $mdDialog.hide();
+                $mdDialog.hide($scope.o);
             };
         }
 
