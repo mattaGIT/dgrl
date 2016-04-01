@@ -1,7 +1,9 @@
 .isNumeric{
     text-align: right;
 }
-
+.md-chips .md-chip {
+    background:rgb(0,137,123);;
+}
 
 /*Angular UI Grid Styling*/
 .myGrid {

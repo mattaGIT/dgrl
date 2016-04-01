@@ -4,36 +4,28 @@ var dgrlSetup = angular.module('myApp', ['ngMaterial', 'ngMessages', 'templates'
             templateUrl: 'views/main.html'
         }
     })
-    // .config(function($stateProvider, $urlRouterProvider) {
-    //
-    //     $stateProvider
-    //
-    //     // route to show our basic form (/form)
-    //
-    //     // nested states
-    //     // each of these sections will have their own view
-    //     // url will be nested (/form/profile)
-    //     .state('objects', {
-    //         url: '/objects.html',
-    //         templateUrl: 'views/objects.html'
-    //     })
-    //
-    //     // url will be /form/interests
-    //     .state('fields', {
-    //         url: '/fields.html',
-    //         templateUrl: 'views/fields.html'
-    //     })
-    //
-    //     // catch all route
-    //     // send users to the form page
-    //     $urlRouterProvider.otherwise('/objects.html');
-// })
-   
-    .directive('relatedObject', function() {
+
+.directive('relatedObject', function() {
         return {
-          scope: {
-            relationship: '=relationship'
-          },
+            controller: function($scope) {
+                $scope.ctrl = {};
+                $scope.getFD = $scope.main.getFD;
+                $scope.relationship.fields = [];
+                $scope.relationship.selected = [];
+                $scope.transformChip = function(chip) {
+                    // If it is an object, it's already a known chip
+                    if (angular.isObject(chip)) {
+                        return chip;
+                    }
+
+                    // Otherwise, create a new one
+                    return { name: chip, type: 'new' }
+                }
+            },
+            scope: {
+                relationship: '=relationship',
+                main: '='
+            },
             templateUrl: 'views/related.html',
             replace: true
         }
@@ -61,9 +53,9 @@ var dgrlSetup = angular.module('myApp', ['ngMaterial', 'ngMessages', 'templates'
             });
         }
 
-        function filterResults(searchText, results, filterCond) {
+        function filterResults(searchText, results) {
             results = searchText ? results.filter(textMatch(searchText)) : results;
-            results = filterCond ? results.filter(filterCond(results)) : results;
+            // results = filterCond ? results.filter(filterCond(results)) : results;
             return results;
         }
         ///main vars
@@ -97,11 +89,14 @@ var dgrlSetup = angular.module('myApp', ['ngMaterial', 'ngMessages', 'templates'
         };
         self.getSO();
         self.getFD = function(searchText, r) {
-            return self.getFieldDescribe(r.object.Name).then(function(results) {
-                r.fields = lowerCaseResults(results);
-                // self.fields = _.union(self.fields, r.fields);
-                return filterResults(searchText, r.fields, lookupMatch);
-            })
+            if (r.fields.length == 0)
+                return self.getFieldDescribe(r.Name).then(
+                    function(results) {
+                        r.fields = lowerCaseResults(results);
+                        return filterResults(searchText, r.fields);
+                    })
+            else
+                return filterResults(searchText, r.fields);
         };
 
 
@@ -137,42 +132,42 @@ var dgrlSetup = angular.module('myApp', ['ngMaterial', 'ngMessages', 'templates'
             })
         };
 
-        
-        self.noRelationships=true;
+
+        self.noRelationships = true;
+
         self.checkEmpty = function() {
-            if (self.noRelationships) {
-                //self.showDialog();
+                if (self.relationships.length==0) {
+                    self.showDialog('main');
+                }
             }
-        }
-        ////dialog
+            ////dialog
 
         $scope.$watch('relationships', function() {
             if (self.relationships.length != 0)
                 self.noRelationships = false;
         });
-        self.object={};
         self.showDialog = function(type) {
 
             $mdDialog.show({
-                controller: DialogController,
-                templateUrl: 'views/objects.toast.html',
-                clickOutsideToClose: true,
-                fullscreen: false,
-              locals: {
-                main: $scope.main,
-                type: type
-              }
-            })
-            .then(function(o) {
-              self.relationships.push(o)
-            }, function(o) {
+                    controller: DialogController,
+                    templateUrl: 'views/objects.toast.html',
+                    clickOutsideToClose: true,
+                    fullscreen: false,
+                    locals: {
+                        main: $scope.main,
+                        type: type
+                    }
+                })
+                .then(function(o) {
+                    self.relationships.push(o)
+                }, function(o) {
                     // self.object = o;
                 });
 
         };
 
 
-      function DialogController($scope, $mdDialog, main, type) {
+        function DialogController($scope, $mdDialog, main, type) {
             $scope.main = main
             $scope.relationship = {};
             $scope.hide = function() {
@@ -199,18 +194,14 @@ var dgrlSetup = angular.module('myApp', ['ngMaterial', 'ngMessages', 'templates'
                 'hue-2': '700', // use shade 600 for the <code>md-hue-2</code> class
                 'hue-3': '900' // use shade A100 for the <code>md-hue-3</code> class
             })
-        // If you specify less than all of the keys, it will inherit from the
-        // default shades
-        .accentPalette('lime', {
-            'default': '400' // use shade 200 for default, and keep all other shades the same
-        });
+            // If you specify less than all of the keys, it will inherit from the
+            // default shades
+            .accentPalette('lime', {
+                'default': '400' // use shade 200 for default, and keep all other shades the same
+            });
     });
 
 
-[
-  {
-    
-  }
-]
+[{
 
-
+}]

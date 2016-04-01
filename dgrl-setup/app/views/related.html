@@ -1,28 +1,26 @@
-
-<div>
-   <md-card ng-click="" flex="100">
-        <md-card-title >
+<div >
+    <md-card ng-click="" flex="100">
+        <md-card-title>
             <md-card-title-text>
-                <span class="md-headline">{{relationship.Name}}</span>
-                <span class="md-subhead">{{relationship.type}}</span>
+                <span class="md-headline">{{relationship.Label}}</span>
+                <span class="md-subhead">{{relationship.Name}}</span>
             </md-card-title-text>
-            <md-card-title-media >
-            </md-card-title-media >
         </md-card-title>
-
-        <!-- <md-card-actions layout="row" layout-align="space-around stretch">
-             <md-button ng-click="showDialog()" aria-label="child" class="md-mini">
-             <md-tooltip md-direction="top" md-visible="false">Add Child Object</md-tooltip>
-             <md-icon aria-label="child" ng-click>wb_incandescent</md-icon>
-             </md-button>
-             <md-button ng-click="showDialog()" aria-label="joiner" class="md-mini">
-             <md-tooltip md-direction="top" md-visible="false">Add Lookup</md-tooltip>
-             <md-icon aria-label="joiner">wb_iridescent</md-icon>
-             </md-button>
-             </md-card-actions>
-           -->  </md-card>
+        <md-card-content>
+            <md-chips ng-model="relationship.selected" md-autocomplete-snap="" md-transform-chip="transformChip($chip)" md-require-match="true">
+                <md-autocomplete md-selected-item="ctrl.selected" md-search-text="ctrl.searchText" md-items="item in getFD(ctrl.searchText,relationship)" md-item-text="item.Name" placeholder="Add fields">
+                    <md-item-template>
+                        <span md-highlight-text="ctrl.searchText" md-highlight-flags="^i">{{item.Name}}</span>
+                    </md-item-template>
+                </md-autocomplete>
+                <md-chip-template class="md-focused">
+                    <span>
+          <strong>{{$chip.Label}}</strong>
+          <em>({{$chip.Name}})</em>
+        </span>
+                </md-chip-template>
+            </md-chips>
+        </md-card-content>
+    </md-card>
+<!--     <md-icon aria-label="joiner">keyboard_backspace</md-icon> -->
 </div>
-
-
-
-
