@@ -1,4 +1,4 @@
-var dgrlSetup = angular.module('myApp', ['ngMaterial', 'ngMessages', 'templates', 'ngForce', 'ngAnimate', 'sf'])
+var dgrlSetup = angular.module('myApp', ['ngMaterial', 'ngMessages', 'templates', 'ngForce', 'ngAnimate', 'sf','dgrl'])
     .directive('dgrlSetup', function() {
         return {
             templateUrl: 'views/main.html'
