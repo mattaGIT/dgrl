@@ -1,13 +1,13 @@
 'use strict';
 
-var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.grid.grouping', 'ui.grid.treeView'])
+var dgrl = angular.module('dgrl', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.grid.grouping', 'ui.grid.treeView'])
     .directive('dgrl', function() {
         return {
-            template: '<div ng-controller="MainCtrl"> <p ng-show="lastChange"> <div id="grid1" ui-grid="gridOptions" ui-grid-grouping class="grid" style="width:100%;"></div></div>'
+            template: '<div ng-controller="dgrl-main"> <p ng-show="lastChange"> <div id="grid1" ui-grid="gridOptions" ui-grid-grouping class="grid" style="width:100%;"></div></div>'
         }
     })
 
-.controller('MainCtrl', ['$scope', '$q', '$timeout', 'vfr', 'sf', '$interval', 'uiGridConstants', 'uiGridGroupingConstants', 'uiGridTreeViewConstants', function($scope, $q, $timeout, vfr, sf, $interval, uiGridConstants, uiGridGroupingConstants, uiGridTreeViewConstants) {
+.controller('dgrl-main', ['$scope', '$q', '$timeout', 'vfr', 'sf', '$interval', 'uiGridConstants', 'uiGridGroupingConstants', 'uiGridTreeViewConstants', function($scope, $q, $timeout, vfr, sf, $interval, uiGridConstants, uiGridGroupingConstants, uiGridTreeViewConstants) {
 
 
     var setGroupValues = function(columns, rows) {
@@ -52,6 +52,7 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
     $scope.object1.groupingField = sf.Grouping_1_Field;
     $scope.object1.groupingFieldSet = sf.Grouping_1_Field_Set;
     $scope.object1.groupingParentField = sf.Grouping_1_Parent_Field;
+    $scope.object1.whereCondition = 'Exclude_From_Rollup__c = false';
 
     $scope.object2 = {};
     $scope.object2.fields = [];
@@ -62,26 +63,27 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
     $scope.object2.groupingField = sf.Grouping_2_Field;
     $scope.object2.groupingFieldSet = sf.Grouping_2_Field_Set;
     $scope.object2.groupingParentField = sf.Grouping_2_Parent_Field;
+    $scope.object2.whereCondition = 'inActive__c = false AND Account_Status__c!= \'Closed\'';
 
     $scope.faMap = [];
     $scope.grandTotal = {};
 
     $scope.gridOptions = {
         rowHeight: 23,
-        showGridFooter: false,
+        showGridFooter: true,
         showColumnFooter: true,
-        enableFiltering: false,
+        enableFiltering: true,
         enableSorting: true,
         groupingShowCounts: false,
-        enableHorizontalScrollbar: uiGridConstants.scrollbars.NEVER,
+        enableHorizontalScrollbar:uiGridConstants.scrollbars.NEVER,
         columnDefs: [{
                 name: 'Person / Entity',
                 displayName: 'Person / Entity',
                 field: 'Entity__r.Name',
                 width: '15%',
-                enableColumnMenu: false,
+                enableColumnMenu: true,
                 cellTooltip: true,
-                headerTooltip: true,
+                headerTooltip:true,
                 grouping: {
                     groupPriority: 0
                 },
@@ -91,20 +93,12 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
                 },
                 cellClass: 'grid-align',
                 cellTemplate: '<div class="ui-grid-cell-contents"><a ng-if="!col.grouping || col.grouping.groupPriority === undefined || col.grouping.groupPriority === null || ( row.groupHeader && col.grouping.groupPriority === row.treeLevel )" target="_parent" href="{{grid.appScope.baseURL}}/{{grid.appScope.getId(row)}}" >{{COL_FIELD}}</a></div>'
-            }, {
-                name: 'Prism',
-                displayName: '',
-                field: 'Prism__c',
-                enableColumnMenu: false,
-                width: '30',
-                cellTemplate: '<div class="ui-grid-cell-contents"><a ng-if="!row.groupHeader" target="_parent" href="http://prism.nb.com/AcctSpecificReports/default.aspx?acctno={{row.entity.Financial_Account__r.Account_Number__c}}" ><img src=https://nbhnw--c.na12.content.force.com/servlet/servlet.ImageServer?id=015U0000002pUXW&oid=00DU0000000LyEC> </a></div>'
-
-            }, {
+            },  {
                 name: 'Account #',
                 field: 'Financial_Account__r.Account_Number__c',
-                enableColumnMenu: false,
+                enableColumnMenu: true,
                 cellTooltip: true,
-                headerTooltip: true,
+                headerTooltip:true,
                 sort: {
                     priority: 2,
                     direction: 'asc'
@@ -115,36 +109,68 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
                 name: 'Account Name',
                 field: 'Account_Name__c',
                 width: '15%',
-                enableColumnMenu: false,
+                enableColumnMenu: true,
                 cellTooltip: true,
-                headerTooltip: true
+                headerTooltip:true
             }, {
                 name: 'Relationship / Role',
                 field: 'Relationship_Role__c',
                 width: '15%',
-                enableColumnMenu: false,
+                enableColumnMenu: true,
                 cellTooltip: true,
-                headerTooltip: true
+                headerTooltip:true
             },
 
             {
                 field: 'Account_Status__c',
                 name: 'Account Status',
-                enableColumnMenu: false,
+                enableColumnMenu: true,
                 cellTooltip: true,
-                headerTooltip: true
+                headerTooltip:true
             }, {
                 field: 'Financial_Account__r.Manager_Sales_Code__c',
                 name: 'Manager / Sales Code',
-                enableColumnMenu: false,
+                enableColumnMenu: true,
                 cellTooltip: true,
-                headerTooltip: true
+                headerTooltip:true
             }, {
                 name: 'Discretionary',
                 field: 'Discretionary__c',
-                enableColumnMenu: false,
+                enableColumnMenu: true,
                 cellTooltip: true,
-                headerTooltip: true
+                headerTooltip:true
+            }, {
+                field: 'AccountValueOP',
+                name: 'Account Value - OP',
+                width: '9%',
+                enableColumnMenu: true,
+                cellTooltip: true,
+                headerTooltip:true,
+                displayName: 'Total OP Value',
+                customTreeAggregationFinalizerFn: function(aggregation) {
+                    aggregation.rendered = aggregation.value;
+                },
+                cellFilter: 'currency',
+                footerCellFilter: 'currency',
+                treeAggregationType: uiGridGroupingConstants.aggregation.SUM,
+                cellTemplate: '<div><div class="ui-grid-cell-contents isNumeric" title="TOOLTIP">{{COL_FIELD CUSTOM_FILTERS}}</div></div>',
+                footerCellTemplate: '<div><div class="ui-grid-cell-contents isNumeric">{{grid.appScope.grandTotal.op|currency}}</div></div>'
+            }, {
+                field: 'AccountValueIP',
+                name: 'Account Value - IP',
+                width: '9%',
+                cellTooltip: true,
+                headerTooltip:true,
+                enableColumnMenu: false,
+                displayName: 'Total IP Value',
+                customTreeAggregationFinalizerFn: function(aggregation) {
+                    aggregation.rendered = aggregation.value;
+                },
+                cellFilter: 'currency',
+                footerCellFilter: 'currency',
+                treeAggregationType: uiGridGroupingConstants.aggregation.SUM,
+                cellTemplate: '<div><div class="ui-grid-cell-contents isNumeric" title="TOOLTIP">{{COL_FIELD CUSTOM_FILTERS}}</div></div>',
+                footerCellTemplate: '<div><div class="ui-grid-cell-contents isNumeric">{{grid.appScope.grandTotal.ip|currency}}</div></div>'
             }
         ],
 
@@ -161,65 +187,65 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
         }
     };
 
-    // function applyRules(fas) {
+    function applyRules(fas) {
+        
+        var faN;
+        var faE;
+        var fapId;
+        var faType;
+        var fa;
+        var faMap = [];
+        for (var i = 0; i < fas.length; i++) {
+            faN = fas[i].Financial_Account__r.Account_Number__c;
+            faE = fas[i].Entity__c;
+            fapId = fas[i].Id;
+            faType = (fas[i].Role__c == 'Interested Party') ? 'i' : 'o';
+            //the existing map element
+            fa = _.find(faMap, {
+                'faNum': faN,
+                'faE': faE 
+            });
+            if (!fa) {
+                //doesnt exist so add it
+                faMap.push({
+                    'faNum': faN,
+                    'faE': faE,
+                    'type': faType,
+                    'Id': fapId
+                });
+            } else if (fa.type == 'i' && faType == 'o') {
+                //owner takes precendence
+                _.remove(faMap, {
+                    'faNum': faN,
+                    'faE': faE
+                });
+                faMap.push({
+                    'faNum': faN,
+                    'faE': faE,
+                    'type': faType,
+                    'Id': fapId
+                });
+            }
+        }
+        for (var i = 0; i < faMap.length; i++) {
+            fa = _.find(fas, {
+                'Id': faMap[i].Id
+            });
 
-    //     var faN;
-    //     var faE;
-    //     var fapId;
-    //     var faType;
-    //     var fa;
-    //     var faMap = [];
-    //     for (var i = 0; i < fas.length; i++) {
-    //         faN = fas[i].Financial_Account__r.Account_Number__c;
-    //         faE = fas[i].Entity__c;
-    //         fapId = fas[i].Id;
-    //         faType = (fas[i].Role__c == 'Interested Party') ? 'i' : 'o';
-    //         //the existing map element
-    //         fa = _.find(faMap, {
-    //             'faNum': faN,
-    //             'faE': faE 
-    //         });
-    //         if (!fa) {
-    //             //doesnt exist so add it
-    //             faMap.push({
-    //                 'faNum': faN,
-    //                 'faE': faE,
-    //                 'type': faType,
-    //                 'Id': fapId
-    //             });
-    //         } else if (fa.type == 'i' && faType == 'o') {
-    //             //owner takes precendence
-    //             _.remove(faMap, {
-    //                 'faNum': faN,
-    //                 'faE': faE
-    //             });
-    //             faMap.push({
-    //                 'faNum': faN,
-    //                 'faE': faE,
-    //                 'type': faType,
-    //                 'Id': fapId
-    //             });
-    //         }
-    //     }
-    //     for (var i = 0; i < faMap.length; i++) {
-    //         fa = _.find(fas, {
-    //             'Id': faMap[i].Id
-    //         });
+            if (faMap[i].type == 'o') {
+                fa.AccountValueOP = fa.Financial_Account__r.Total_Account_Value__c;
+            } else {
+                fa.AccountValueIP = fa.Financial_Account__r.Total_Account_Value__c;
+            }
 
-    //         if (faMap[i].type == 'o') {
-    //             fa.AccountValueOP = fa.Financial_Account__r.Total_Account_Value__c;
-    //         } else {
-    //             fa.AccountValueIP = fa.Financial_Account__r.Total_Account_Value__c;
-    //         }
-
-    //     }
-    //     var u = function(n){return n.Financial_Account__r.Account_Number__c+''+n.Role__c}
-    //     var uniqueOpAccounts = _.uniq(_.filter(fas,'AccountValueOP'),'Financial_Account__r.Account_Number__c');
-    //     var uniqueIpAccounts = _.uniq(_.filter(fas,'AccountValueIP'),'Financial_Account__r.Account_Number__c');
-    //     $scope.grandTotal.op = _.sum(uniqueOpAccounts,'AccountValueOP');
-    //     $scope.grandTotal.ip = _.sum(uniqueIpAccounts,'AccountValueIP');
-    //     return fas;
-    // }
+        }
+        var u = function(n){return n.Financial_Account__r.Account_Number__c+''+n.Role__c}
+        var uniqueOpAccounts = _.uniq(_.filter(fas,'AccountValueOP'),'Financial_Account__r.Account_Number__c');
+        var uniqueIpAccounts = _.uniq(_.filter(fas,'AccountValueIP'),'Financial_Account__r.Account_Number__c');
+        $scope.grandTotal.op = _.sum(uniqueOpAccounts,'AccountValueOP');
+        $scope.grandTotal.ip = _.sum(uniqueIpAccounts,'AccountValueIP');
+        return fas;
+    }
     $scope.getId = function(row) {
         var theId = row.treeNode.children[0].row.entity.Entity__c;
         return theId;
@@ -263,7 +289,7 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
     }
 
     function getRGs() {
-        var rgQuery = 'SELECT Id, Name FROM Accpimt WHERE Id IN ';
+        var rgQuery = 'SELECT Id, Name FROM Relationship_Group__c WHERE Id IN ';
         rgQuery += '(SELECT Child_Relationship_Group__c  FROM Relationship_Group_Association__c WHERE Parent_Relationship_Group__c= ';
         rgQuery += '\'' + $scope.ids + '\')';
 
@@ -277,16 +303,14 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
             });
     }
 
-    getFields($scope.object1).then(
-        function(results) {
-            $scope.gridOptions.data = $scope.object1.data;
-        )
-
+    getRGs().then(function(results) {
+        return getFields($scope.object1);
     }).then(function(results) {
-    return getFields($scope.object2);
-}).then(function(results) {
-    $scope.gridOptions.data = $scope.object2.data;
-})
+        return getFields($scope.object2);
+    }).then(function(results) {
+        $scope.object2.data = applyRules($scope.object2.data);
+        $scope.gridOptions.data = $scope.object2.data;
+    })
 
 
 

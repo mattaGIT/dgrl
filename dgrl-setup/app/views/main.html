@@ -1,30 +1,28 @@
-<div ng-controller="mainCtrl as main" ng-cloak="" class="md-inline-form fabSpeedDialdemoMoreOptions">
+<div ng-controller="mainCtrl as main"  >
     <md-toolbar>
         <div class="md-toolbar-tools">
             <md-button aria-label="Go Back">
                 Go Back
             </md-button>
-            <md-button ng-click="main.saveObjects()" aria-label="Learn More">
+            <md-button ng-click="main.saveObjects()">
                 Save
             </md-button>
-
             <span flex=""></span>
             <h2>
-          <span>DGRL</span>
-        </h2>
+                <span>DGRL</span>
+            </h2>
         </div>
     </md-toolbar>
-    <md-content>
-        <md-tabs class="md-accent" md-dynamic-height="" md-align-tabs="top">
-            <md-tab id="tab1">
-                <md-tab-label>
+        <md-tabs md-dynamic-height="true" class="md-accent" md-stretch-tabs="always">
+            <md-tab id="objects" >
+            <!-- md-on-select="main.checkEmpty() -->
+                <div flex ng-include src="'views/objects.html'" />
+                <md-tab-label class="md-accent">
                     <md-icon aria-label="objects">extension</md-icon>
                     <span>Objects</span>
                 </md-tab-label>
-                <md-tab-body layout-fill>
-                    <md-content>
-                        <div ng-include src="'views/objects.html'" />
-                    </md-content>
+                <md-tab-body >
+                    <div  flex ng-include src="'views/objects.html'" />
                 </md-tab-body>
             </md-tab>
             <md-tab id="tab2" ng-disabled="data.secondLocked">
@@ -33,7 +31,7 @@
                     <span>Fields</span>
                 </md-tab-label>
                 <md-tab-body>
-                    <div ng-include src="'views/related.html'"/>
+                    <div ng-include src="'views/dgrl.html'"/>
                 </md-tab-body>
             </md-tab>
             <md-tab id="tab3">
@@ -46,5 +44,4 @@
                 </md-tab-body>
             </md-tab>
         </md-tabs>
-        </md-content>
 </div>

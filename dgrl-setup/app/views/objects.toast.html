@@ -1,0 +1,27 @@
+<md-dialog aria-label="Choose an Object" ng-cloak>
+    <div layout="column" layout-padding>
+        <md-dialog-content>
+                <md-autocomplete flex
+                 class="md-block"
+                  md-selected-item="selectedObject" 
+                  md-search-text="relationship.searchText" 
+                  md-items="item in main.getSO(relationship.searchText)" 
+                  md-item-text="item.Name" 
+                  md-min-length="1"
+                  md-floating-label="Object" 
+                  md-select-on-match="true">
+                    <md-item-template>
+                        <span md-highlight-text="relationship.searchText" md-highlight-flags="^i">{{item.Name}}</span>
+                    </md-item-template>
+                </md-autocomplete>
+        </md-dialog-content>
+        <md-dialog-actions layout="row">
+            <md-button ng-click="answer()">
+                Done
+            </md-button>
+            <md-button ng-click="cancel()" style="margin-right:20px;">
+                Cancel
+            </md-dialog-actions>
+        </div>
+    </div>
+</md-dialog>

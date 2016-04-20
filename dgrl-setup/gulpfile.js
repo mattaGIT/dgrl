@@ -66,7 +66,6 @@ gulp.task('scripts', function() {
     .pipe(order([
         "app.js"
     ]))
-        .pipe(ngAnnotate())
         .pipe(concat('main.js'))
         .pipe(gulp.dest('./build/scripts'));
 });
