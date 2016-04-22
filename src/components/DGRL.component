@@ -1,6 +1,6 @@
 <apex:component controller="DGRL">
   <apex:attribute name="DGRLName" description="Name of DGRL Settings Record" type="String" required="true" assignTo="{!DGRL}"/>
-  <apex:attribute name="rId" description="Id of Record" type="String" required="true" assignTo="{!recordId}"/>
+  <apex:attribute name="mainObjectId" description="Id of Record" type="String" required="true" assignTo="{!recordId}"/>
   <apex:stylesheet value="{!URLFOR($Resource.DGRL, 'styles/lib.css')}"></apex:stylesheet>
   <apex:stylesheet value="{!URLFOR($Resource.DGRL, 'styles/main.css')}"></apex:stylesheet>
   <div ng-app="app"><dgrl></dgrl></div>
