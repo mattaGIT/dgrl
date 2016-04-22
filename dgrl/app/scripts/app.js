@@ -9,7 +9,6 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
 
 .controller('MainCtrl', ['$scope', '$q', '$timeout', 'vfr', 'sf', '$interval', 'uiGridConstants', 'uiGridGroupingConstants', 'uiGridTreeViewConstants', function($scope, $q, $timeout, vfr, sf, $interval, uiGridConstants, uiGridGroupingConstants, uiGridTreeViewConstants) {
 
-
     var setGroupValues = function(columns, rows) {
         columns.forEach(function(column) {
             if (column.grouping && column.grouping.groupPriority > -1) {
@@ -161,65 +160,7 @@ var app = angular.module('DGRL', ['ngAnimate', 'ui.grid', 'ngForce', 'sf', 'ui.g
         }
     };
 
-    // function applyRules(fas) {
-
-    //     var faN;
-    //     var faE;
-    //     var fapId;
-    //     var faType;
-    //     var fa;
-    //     var faMap = [];
-    //     for (var i = 0; i < fas.length; i++) {
-    //         faN = fas[i].Financial_Account__r.Account_Number__c;
-    //         faE = fas[i].Entity__c;
-    //         fapId = fas[i].Id;
-    //         faType = (fas[i].Role__c == 'Interested Party') ? 'i' : 'o';
-    //         //the existing map element
-    //         fa = _.find(faMap, {
-    //             'faNum': faN,
-    //             'faE': faE 
-    //         });
-    //         if (!fa) {
-    //             //doesnt exist so add it
-    //             faMap.push({
-    //                 'faNum': faN,
-    //                 'faE': faE,
-    //                 'type': faType,
-    //                 'Id': fapId
-    //             });
-    //         } else if (fa.type == 'i' && faType == 'o') {
-    //             //owner takes precendence
-    //             _.remove(faMap, {
-    //                 'faNum': faN,
-    //                 'faE': faE
-    //             });
-    //             faMap.push({
-    //                 'faNum': faN,
-    //                 'faE': faE,
-    //                 'type': faType,
-    //                 'Id': fapId
-    //             });
-    //         }
-    //     }
-    //     for (var i = 0; i < faMap.length; i++) {
-    //         fa = _.find(fas, {
-    //             'Id': faMap[i].Id
-    //         });
-
-    //         if (faMap[i].type == 'o') {
-    //             fa.AccountValueOP = fa.Financial_Account__r.Total_Account_Value__c;
-    //         } else {
-    //             fa.AccountValueIP = fa.Financial_Account__r.Total_Account_Value__c;
-    //         }
-
-    //     }
-    //     var u = function(n){return n.Financial_Account__r.Account_Number__c+''+n.Role__c}
-    //     var uniqueOpAccounts = _.uniq(_.filter(fas,'AccountValueOP'),'Financial_Account__r.Account_Number__c');
-    //     var uniqueIpAccounts = _.uniq(_.filter(fas,'AccountValueIP'),'Financial_Account__r.Account_Number__c');
-    //     $scope.grandTotal.op = _.sum(uniqueOpAccounts,'AccountValueOP');
-    //     $scope.grandTotal.ip = _.sum(uniqueIpAccounts,'AccountValueIP');
-    //     return fas;
-    // }
+    
     $scope.getId = function(row) {
         var theId = row.treeNode.children[0].row.entity.Entity__c;
         return theId;
